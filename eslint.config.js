@@ -7,6 +7,8 @@ import globals from 'globals'
 import typescriptEslint from 'typescript-eslint'
 
 const FILE = {
+  browserJavascript: ['src/**/*.js'],
+  bundledDiagramMarkup: ['src/app/architecture-diagram/ArchitectureDiagram.vue'],
   javascript: ['**/*.{js,mjs,cjs}'],
   source: ['**/*.{ts,vue}'],
 }
@@ -30,6 +32,13 @@ export default defineConfig([
       globals: globals.node,
     },
     name: 'project/javascript',
+  },
+  {
+    files: FILE.browserJavascript,
+    languageOptions: {
+      globals: globals.browser,
+    },
+    name: 'project/browser-javascript',
   },
   {
     extends: [
@@ -69,6 +78,13 @@ export default defineConfig([
       'vue/block-lang': ['error', { script: { lang: 'ts' } }],
       'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
       'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+    },
+  },
+  {
+    files: FILE.bundledDiagramMarkup,
+    name: 'project/bundled-diagram-markup',
+    rules: {
+      'vue/no-v-html': 'off',
     },
   },
   eslintConfigPrettier,

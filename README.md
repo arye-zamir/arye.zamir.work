@@ -25,6 +25,14 @@ CI runs those stages independently on Node 22.13 and 24. A separate networked se
 
 ## Development
 
+The first interactive architecture diagram is available at `/see/alektions-election-events-map`.
+See [the integration notes](docs/architecture-diagram.md) for its source, lifecycle contracts, and browser checks.
+
+```sh
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
 ```sh
 pnpm install
 pnpm dev

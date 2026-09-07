@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import type { MessageKey } from './i18n'
 
+import { DIAGRAM } from './diagrams'
+
 declare module 'vue-router' {
   interface RouteMeta {
     descriptionKey?: MessageKey
@@ -17,6 +19,7 @@ export const ROUTE_PATH = {
 } as const
 
 const ROUTE_NAME = {
+  diagram: 'diagram',
   home: 'home',
   notFound: 'not-found',
   read: 'read',
@@ -50,6 +53,15 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      component: () => import('../app/views/DiagramView.vue'),
+      meta: {
+        descriptionKey: DIAGRAM.alektions.descriptionKey,
+        titleKey: DIAGRAM.alektions.titleKey,
+      },
+      name: ROUTE_NAME.diagram,
+      path: DIAGRAM.alektions.path,
+    },
+    {
       component: () => import('../app/views/HomeView.vue'),
       meta: ROUTE_META.home,
       name: ROUTE_NAME.home,
@@ -74,5 +86,5 @@ export const router = createRouter({
       path: ROUTE_PATH.notFound,
     },
   ],
-  scrollBehavior: () => SCROLL_POSITION,
+  scrollBehavior: (to, from, savedPosition) => savedPosition ?? (to.path === from.path ? false : SCROLL_POSITION),
 })

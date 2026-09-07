@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ingest",
+    "label": "Ingest path",
+    "focus": ["sources", "scanner", "rabbit", "server", "mongo"],
+    "note": "How a raw item travels from an outlet feed into durable state."
+  },
+  {
+    "id": "reasoning",
+    "label": "Reasoning tiers",
+    "focus": ["rabbit", "brain", "openrouter", "newsdesk", "server"],
+    "note": "Stage-1 classification stays inside the perimeter; stage-2 enrichment and the desk tier run in the graph."
+  },
+  {
+    "id": "read-path",
+    "label": "Read path",
+    "focus": ["server", "ui", "google", "mongo"],
+    "note": "What the browser sees, and how a staff session is authenticated."
+  }
+]

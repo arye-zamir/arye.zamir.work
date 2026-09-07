@@ -3,11 +3,14 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { contentForLocale } from '../../internal/content'
+import { DIAGRAM } from '../../internal/diagrams'
 import { I18N_SCOPE, type MessageKey, resolveLocale } from '../../internal/i18n'
 import { APP_REGION } from '../accessibility'
 import { FEATURED_PROJECT } from '../content/projects'
 
 const TRANSLATION_KEY = {
+  diagramLabel: 'diagram.label',
+  diagramOpen: 'diagram.open',
   eyebrow: 'portfolio.eyebrow',
   indexLabel: 'portfolio.indexLabel',
   introduction: 'portfolio.introduction',
@@ -42,6 +45,13 @@ const project = computed(() => contentForLocale(FEATURED_PROJECT, resolveLocale(
         <h2>{{ project.title }}</h2>
         <p>{{ project.body }}</p>
       </div>
+    </section>
+
+    <section class="portfolio-diagram">
+      <p class="eyebrow">{{ t(TRANSLATION_KEY.diagramLabel) }}</p>
+      <h2>{{ t(DIAGRAM.alektions.titleKey) }}</h2>
+      <p>{{ t(DIAGRAM.alektions.descriptionKey) }}</p>
+      <RouterLink class="text-link" :to="DIAGRAM.alektions.path">{{ t(TRANSLATION_KEY.diagramOpen) }}</RouterLink>
     </section>
   </main>
 </template>

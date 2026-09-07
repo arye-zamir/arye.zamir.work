@@ -22,6 +22,17 @@ const ENGLISH_MESSAGES = {
     skipToContent: 'Skip to main content',
     versionPrefix: 'v',
   },
+  diagram: {
+    alektions: {
+      description:
+        'Explore the architecture of a live election-events map: ingestion, geographic normalization, delivery, and the interactive frontend.',
+      title: 'Alektions: Live Election-Events Map',
+    },
+    back: 'Selected work',
+    failure: 'The interactive controls could not start. You can still read the diagram below.',
+    label: 'Interactive architecture',
+    open: 'Explore the architecture',
+  },
   home: {
     eyebrow: 'Frontend Architect · Designer · Builder',
     introduction:
@@ -98,6 +109,16 @@ const HEBREW_MESSAGES = {
     siteName: 'אריה זמיר',
     skipToContent: 'דילוג לתוכן הראשי',
     versionPrefix: 'גרסה ',
+  },
+  diagram: {
+    alektions: {
+      description: 'ארכיטקטורה של מפת אירועי בחירות בזמן אמת: קליטת מידע, נרמול גאוגרפי, הפצה וממשק משתמש אינטראקטיבי.',
+      title: 'Alektions: מפת אירועי בחירות בזמן אמת',
+    },
+    back: 'עבודות נבחרות',
+    failure: 'לא ניתן להפעיל את הכלים האינטראקטיביים. אפשר עדיין לקרוא את התרשים למטה.',
+    label: 'ארכיטקטורה אינטראקטיבית',
+    open: 'לסיור בארכיטקטורה',
   },
   home: {
     eyebrow: 'ארכיטקט פרונטאנד · מעצב · בונה',

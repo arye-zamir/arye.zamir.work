@@ -34,7 +34,7 @@ export const useDocumentContext = () => {
   })
 
   watch(
-    () => route.fullPath,
+    () => route.path,
     async () => {
       await nextTick()
       const heading = document.querySelector<HTMLElement>(DOCUMENT.headingSelector)
