@@ -2,86 +2,91 @@ export const STORAGE_CAST = { arr: 'arr', bool: 'bool', int: 'int', obj: 'obj', 
 export const STORAGE_PREFIX = 'zui__'
 export const STORAGE_KEY = { motion: 'motion', theme: 'theme' } as const
 
-export type StorageCast = (typeof STORAGE_CAST)[keyof typeof STORAGE_CAST]
-export type JsonValue = boolean | null | number | string | JsonValue[] | { [key: string]: JsonValue }
-export type StorageValue = boolean | number | string | JsonValue[] | { [key: string]: JsonValue }
-export interface StorageEnvelope {
-  as?: StorageCast
-  ttl?: number
-  val: StorageValue
-  ver?: number
-}
-export interface StorageOptions {
-  as?: StorageCast
-  ttl?: number
-  ver?: number
-}
-export interface StorageReadOptions {
-  as?: StorageCast
-  ver?: number
-}
+export type JsonValue = boolean | JsonValue[] | null | number | string | { [key: string]: JsonValue }
 export interface StorageBackend {
   getItem: (key: string) => null | string
   removeItem: (key: string) => void
   setItem: (key: string, value: string) => void
 }
+export type StorageCast = (typeof STORAGE_CAST)[keyof typeof STORAGE_CAST]
 export interface StorageDependencies {
   backend: () => StorageBackend | undefined
   now?: () => number
   watch?: (listener: (key: null | string) => void) => () => void
 }
+export interface StorageEnvelope<T = unknown> {
+  as?: StorageCast
+  ttl?: number
+  val: T
+  ver?: number
+}
+export interface StorageOptions {
+  ttl?: number
+  ver?: number
+}
+export interface StorageReadOptions {
+  ver?: number
+}
+export interface StorageType<T> {
+  as: StorageCast
+  is: (value: unknown) => value is T
+}
 
-const VALUE = { boolean: 'boolean', false: 'false', number: 'number', object: 'object', one: 1, string: 'string', true: 'true', zero: 0 } as const
-const ERROR = { key: 'Storage keys must be nonempty unprefixed names.', metadata: 'Invalid storage expiry or version.', value: 'Value does not match its storage cast.' } as const
-const INTEGER = /^[+-]?\d+$/
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  value !== null && typeof value === VALUE.object && !Array.isArray(value)
+const VALUE = {
+  boolean: 'boolean',
+  number: 'number',
+  object: 'object',
+  string: 'string',
+  zero: 0,
+} as const
+const ERROR = {
+  key: 'Storage keys must be nonempty unprefixed names.',
+  metadata: 'Invalid storage expiry or version.',
+  value: 'Value does not match its code-defined storage type.',
+} as const
+const VALUE_FIELD = 'val'
+const isString = (value: unknown): value is string => typeof value === VALUE.string
+const isNumber = (value: unknown): value is number => typeof value === VALUE.number
+const isBoolean = (value: unknown): value is boolean => typeof value === VALUE.boolean
+const isObject = (value: unknown): value is object => value !== null && typeof value === VALUE.object
+const isRecord = (value: unknown): value is Record<string, unknown> => isObject(value) && !Array.isArray(value)
 const isNatural = (value: unknown): value is number =>
-  typeof value === VALUE.number && Number.isSafeInteger(value) && value >= VALUE.zero
+  isNumber(value) && Number.isSafeInteger(value) && value >= VALUE.zero
 const isJson = (value: unknown, ancestors = new Set<object>()): value is JsonValue => {
-  if (value === null || typeof value === VALUE.string || typeof value === VALUE.boolean) return true
-  if (typeof value === VALUE.number) return Number.isFinite(value)
-  if (typeof value !== VALUE.object || ancestors.has(value)) return false
-  if (!Array.isArray(value) && Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) return false
+  if (value === null || isString(value) || isBoolean(value)) return true
+  if (isNumber(value)) return Number.isFinite(value)
+  if (!isObject(value) || ancestors.has(value)) return false
+  if (
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) !== Object.prototype &&
+    Object.getPrototypeOf(value) !== null
+  )
+    return false
   ancestors.add(value)
   const valid = Object.values(value).every((entry: unknown) => isJson(entry, ancestors))
   ancestors.delete(value)
   return valid
 }
-const castValue = (value: unknown, cast: StorageCast): StorageValue => {
-  switch (cast) {
-    case STORAGE_CAST.str:
-      if (typeof value === VALUE.string) return value
-      if (typeof value === VALUE.boolean || (typeof value === VALUE.number && Number.isFinite(value))) return String(value)
-      break
-    case STORAGE_CAST.int: {
-      const integer = typeof value === VALUE.string && INTEGER.test(value) ? Number(value) : value
-      if (typeof integer === VALUE.number && Number.isSafeInteger(integer)) return integer
-      break
-    }
-    case STORAGE_CAST.bool:
-      if (value === true || value === VALUE.true || value === VALUE.one) return true
-      if (value === false || value === VALUE.false || value === VALUE.zero) return false
-      break
-    case STORAGE_CAST.obj:
-    case STORAGE_CAST.arr: {
-      const decoded: unknown = typeof value === VALUE.string ? JSON.parse(value) : value
-      if ((cast === STORAGE_CAST.arr ? Array.isArray(decoded) : isRecord(decoded)) && isJson(decoded)) return decoded as StorageValue
-      break
-    }
-  }
-  throw new TypeError(ERROR.value)
-}
-const isCast = (value: unknown): value is StorageCast => Object.values(STORAGE_CAST).some((cast) => cast === value)
-const decode = (raw: string): StorageEnvelope | null => {
+export const STORAGE_TYPE = {
+  arr: { as: STORAGE_CAST.arr, is: (value: unknown): value is JsonValue[] => Array.isArray(value) && isJson(value) },
+  bool: { as: STORAGE_CAST.bool, is: isBoolean },
+  int: {
+    as: STORAGE_CAST.int,
+    is: (value: unknown): value is number => isNumber(value) && Number.isSafeInteger(value),
+  },
+  obj: {
+    as: STORAGE_CAST.obj,
+    is: (value: unknown): value is Record<string, JsonValue> => isRecord(value) && isJson(value),
+  },
+  str: { as: STORAGE_CAST.str, is: isString },
+} as const
+const decode = (raw: string): null | StorageEnvelope => {
   try {
     const record: unknown = JSON.parse(raw)
-    if (!isRecord(record) || !Object.hasOwn(record, 'val')) return null
+    if (!isRecord(record) || !Object.hasOwn(record, VALUE_FIELD)) return null
     if (record.ttl !== undefined && !isNatural(record.ttl)) return null
     if (record.ver !== undefined && !isNatural(record.ver)) return null
-    const cast = record.as ?? STORAGE_CAST.str
-    if (!isCast(cast)) return null
-    return { as: cast, ttl: record.ttl, val: castValue(record.val, cast), ver: record.ver }
+    return { ttl: record.ttl, val: record.val, ver: record.ver }
   } catch {
     return null
   }
@@ -133,7 +138,9 @@ export const createStorageService = ({ backend, now = Date.now, watch }: Storage
     emit(key)
     return persistent
   }
-  const get = (key: string, options: StorageReadOptions = {}): StorageValue | null => {
+  function get(key: string): null | string
+  function get<T>(key: string, type: StorageType<T>, options?: StorageReadOptions): null | T
+  function get(key: string, type: StorageType<unknown> = STORAGE_TYPE.str, options: StorageReadOptions = {}): unknown {
     const raw = read(qualifiedKey(key))
     if (raw === null) return null
     const envelope = decode(raw)
@@ -142,15 +149,23 @@ export const createStorageService = ({ backend, now = Date.now, watch }: Storage
       return null
     }
     if (options.ver !== undefined && envelope.ver !== options.ver) return null
-    if (options.as !== undefined && envelope.as !== options.as) return null
-    return envelope.val
+    try {
+      return type.is(envelope.val) ? envelope.val : null
+    } catch {
+      return null
+    }
   }
-  const set = (key: string, value: unknown, options: StorageOptions = {}): boolean => {
+  const set = <T>(key: string, value: T, type: StorageType<T>, options: StorageOptions = {}): boolean => {
     const qualified = qualifiedKey(key)
     const expires = options.ttl === undefined ? undefined : now() + options.ttl
-    if ((options.ttl !== undefined && !isNatural(options.ttl)) || (expires !== undefined && !isNatural(expires)) || (options.ver !== undefined && !isNatural(options.ver))) throw new TypeError(ERROR.metadata)
-    const cast = options.as ?? STORAGE_CAST.str
-    const envelope: StorageEnvelope = { as: cast, ttl: expires, val: castValue(value, cast), ver: options.ver }
+    if (
+      (options.ttl !== undefined && !isNatural(options.ttl)) ||
+      (expires !== undefined && !isNatural(expires)) ||
+      (options.ver !== undefined && !isNatural(options.ver))
+    )
+      throw new TypeError(ERROR.metadata)
+    if (!type.is(value) || !isJson(value)) throw new TypeError(ERROR.value)
+    const envelope: StorageEnvelope<T> = { as: type.as, ttl: expires, val: value, ver: options.ver }
     const raw = JSON.stringify(envelope)
     memory.set(qualified, raw)
     try {
@@ -161,12 +176,11 @@ export const createStorageService = ({ backend, now = Date.now, watch }: Storage
     emit(key)
     return persistent
   }
-  const getOrCreate = (key: string, initial: unknown, options: StorageOptions = {}): StorageValue => {
-    const existing = get(key, options)
+  const getOrCreate = <T>(key: string, initial: T, type: StorageType<T>, options: StorageOptions = {}): T => {
+    const existing = get<T>(key, type, options)
     if (existing !== null) return existing
-    const value = castValue(initial, options.as ?? STORAGE_CAST.str)
-    set(key, value, options)
-    return value
+    set(key, initial, type, options)
+    return initial
   }
   const subscribe = (listener: (key: null | string) => void): (() => void) => {
     listeners.add(listener)

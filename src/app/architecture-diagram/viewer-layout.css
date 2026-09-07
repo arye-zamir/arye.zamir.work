@@ -3,8 +3,7 @@
   border: 0;
 }
 
-#app:has(.diagram-view) > .site-header,
-#app:has(.diagram-view) > .site-footer {
+#app:has(.diagram-view) > .site-header {
   display: none;
 }
 
@@ -193,33 +192,22 @@
   font: inherit;
 }
 
-@media (max-width: 720px) {
-  .architecture-diagram:not([data-embed='true']) .diagram-container[data-wide-diagram='true'] > .diagram-nav {
-    position: sticky;
-    inset-inline-start: max(0px, calc((100% - var(--viewer-nav-width)) / 2));
-    bottom: auto;
-    max-width: 100%;
-    margin: 12px auto 0;
-    transform: none;
-  }
+.architecture-diagram:not([data-embed='true']) .diagram-container[data-wide-diagram='true'] > .diagram-nav {
+  position: sticky;
+  inset-inline-start: max(0px, calc((100% - var(--viewer-nav-width)) / 2));
+  bottom: auto;
+  max-width: 100%;
+  margin: 12px auto 0;
+  transform: none;
+}
 
-  .architecture-diagram:not([data-embed='true']) .diagram-container[data-wide-diagram='true'] {
-    padding-bottom: 12px;
-  }
+.architecture-diagram:not([data-embed='true']) .diagram-container[data-wide-diagram='true'] {
+  padding-bottom: 12px;
 }
 
 @media (max-width: 540px) {
   .architecture-diagram {
     --viewer-nav-width: 320px;
-  }
-
-  .architecture-diagram .viewer-header #btn-theme {
-    width: var(--viewer-control-size);
-    padding: 0;
-  }
-
-  .architecture-diagram .viewer-header #theme-label {
-    display: none;
   }
 
   .architecture-diagram .diagram-container > .diagram-nav {

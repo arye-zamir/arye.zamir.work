@@ -20,6 +20,7 @@
     "viewer.theme.toggle.title": "Toggle theme (T)",
     "viewer.theme.toggle": "Toggle color theme",
     "viewer.theme.dark": "Dark",
+    "viewer.theme.system": "System",
     "viewer.theme.light": "Light",
     "viewer.preset.choose.title": "Choose visual style (S cycles)",
     "viewer.preset.choose": "Choose visual style",

@@ -7,6 +7,8 @@ import globals from 'globals'
 import typescriptEslint from 'typescript-eslint'
 
 const FILE = {
+  application: ['src/**/*.{ts,js,vue}'],
+  browserBoundary: ['src/services/browser.ts'],
   browserJavascript: ['src/**/*.js'],
   bundledDiagramMarkup: ['src/app/architecture-diagram/ArchitectureDiagram.vue'],
   javascript: ['**/*.{js,mjs,cjs}'],
@@ -78,6 +80,26 @@ export default defineConfig([
       'vue/block-lang': ['error', { script: { lang: 'ts' } }],
       'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
       'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+    },
+  },
+  {
+    files: FILE.application,
+    ignores: FILE.browserBoundary,
+    name: 'project/browser-boundary',
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        { message: 'Use the browser service.', name: 'window' },
+        { message: 'Use the browser service.', name: 'navigator' },
+        { message: 'Use the storage service.', name: 'localStorage' },
+        { message: 'Use the storage service.', name: 'sessionStorage' },
+      ],
+      'no-restricted-properties': [
+        'error',
+        { message: 'Use the storage service.', object: 'globalThis', property: 'localStorage' },
+        { message: 'Use the browser service.', object: 'globalThis', property: 'window' },
+        { message: 'Use the browser service.', object: 'globalThis', property: 'navigator' },
+      ],
     },
   },
   {

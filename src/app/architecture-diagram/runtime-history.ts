@@ -2,7 +2,8 @@ import type { Router } from 'vue-router'
 
 import { parseQuery } from 'vue-router'
 
-import { bindBrowserMember } from './browser-member'
+import { browserHistory, browserLocation } from '../../services/browser'
+import { bindBrowserMember } from '../../services/browser-member'
 
 const HISTORY = {
   emptyTitle: '',
@@ -10,14 +11,14 @@ const HISTORY = {
 } as const
 
 export const createRuntimeHistory = (router: Router, isDisposed: () => boolean): History => {
-  const ownerPath = window.location.pathname
+  const ownerPath = browserLocation().pathname
 
   const replaceState: History['replaceState'] = (_data: unknown, _unused: string, url): void => {
-    if (isDisposed() || !url || window.location.pathname !== ownerPath) return
-    const target = new URL(url, window.location.href)
-    if (target.origin !== window.location.origin || target.pathname !== ownerPath) return
+    if (isDisposed() || !url || browserLocation().pathname !== ownerPath) return
+    const target = new URL(url, browserLocation().href)
+    if (target.origin !== browserLocation().origin || target.pathname !== ownerPath) return
     const path = target.pathname + target.search + target.hash
-    window.history.replaceState(window.history.state, HISTORY.emptyTitle, path)
+    browserHistory().replaceState(browserHistory().state, HISTORY.emptyTitle, path)
     void router.replace({
       hash: target.hash,
       path: router.currentRoute.value.path,
@@ -25,7 +26,7 @@ export const createRuntimeHistory = (router: Router, isDisposed: () => boolean):
     })
   }
 
-  return new Proxy(window.history, {
+  return new Proxy(browserHistory(), {
     get(target, property): unknown {
       if (property === HISTORY.replace) return replaceState
       return bindBrowserMember(target, property)

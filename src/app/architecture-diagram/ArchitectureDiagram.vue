@@ -3,14 +3,15 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
+import type { DiagramDefinition } from './diagram-data'
+
 import { I18N_SCOPE, LOCALE, LOCALE_DIRECTION, type MessageKey } from '../../internal/i18n'
 import { ROUTE_PATH } from '../../internal/router'
+import { type ArchifyRuntimeSession, createArchifyRuntimeSession } from '../../services/diagram-runtime'
 import { ARCHIFY_CONTRACT } from './archify-contract'
 import { mountArchifyRuntime } from './archify-runtime'
-import { ALEKTIONS_DIAGRAM as diagram } from './diagram-data'
 import { resolveInitialAttributes } from './initial-state'
 import { createRuntimeHistory } from './runtime-history'
-import { type ArchifyRuntimeSession, createArchifyRuntimeSession } from './runtime-scope'
 import './architecture-diagram.css'
 import './viewer-layout.css'
 
@@ -18,6 +19,8 @@ const TRANSLATION_KEY = {
   back: 'diagram.back',
   failure: 'diagram.failure',
 } as const satisfies Record<string, MessageKey>
+
+const { diagram } = defineProps<{ diagram: DiagramDefinition }>()
 
 const { t } = useI18n({ useScope: I18N_SCOPE.global })
 const router = useRouter()

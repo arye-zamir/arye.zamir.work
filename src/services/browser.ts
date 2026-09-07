@@ -1,7 +1,15 @@
 import { createStorageService } from './storage'
 
-const BROWSER = { change: 'change', darkQuery: '(prefers-color-scheme: dark)', fallbackLanguage: 'en', fallbackUrl: 'http://localhost/', storage: 'storage', unavailable: 'Browser environment unavailable' } as const
-const browser = (): Window | undefined => typeof window === 'undefined' ? undefined : window
+const BROWSER = {
+  change: 'change',
+  darkQuery: '(prefers-color-scheme: dark)',
+  fallbackLanguage: 'en',
+  fallbackUrl: 'http://localhost/',
+  storage: 'storage',
+  unavailable: 'Browser environment unavailable',
+} as const
+type Browser = typeof globalThis & Window
+const browser = (): Browser | undefined => (typeof window === 'undefined' ? undefined : window)
 
 export const browserLanguage = (): string => browser()?.navigator.language ?? BROWSER.fallbackLanguage
 export const browserLocation = (): URL => new URL(browser()?.location.href ?? BROWSER.fallbackUrl)
@@ -11,7 +19,7 @@ export const watchSystemTheme = (listener: () => void): (() => void) => {
   query?.addEventListener(BROWSER.change, listener)
   return () => void query?.removeEventListener(BROWSER.change, listener)
 }
-export const requireBrowser = (): Window => {
+export const requireBrowser = (): Browser => {
   const value = browser()
   if (!value) throw new Error(BROWSER.unavailable)
   return value
@@ -32,3 +40,5 @@ export const storage = createStorageService({
     return () => void target?.removeEventListener(BROWSER.storage, onStorage)
   },
 })
+
+export const browserHistory = (): History => requireBrowser().history

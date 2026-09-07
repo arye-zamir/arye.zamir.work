@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Multi-Channel Commodity Trading Platform",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "channels",
+        "label": "Gateway and authentication",
+        "focus": ["web", "mobile", "gateway", "idp", "agent", "portal", "idpdb", "portaldb"],
+        "note": "Web and mobile enter through zamport. It checks authentication with the IDP, then routes to Amiit.ai or the trading brain."
+      },
+      {
+        "id": "identity",
+        "label": "AI personal assistant",
+        "focus": ["agent", "mcp", "docs", "erp", "vikunja", "mcpdb", "erpdb", "vikunjadb"],
+        "note": "The full Amiit.ai stack serves as the trading platform's AI personal assistant and accesses project services through zaMCP."
+      },
+      {
+        "id": "domain",
+        "label": "Business core",
+        "focus": ["portal", "docs", "erp", "vikunja", "portaldb", "erpdb", "vikunjadb"],
+        "note": "The trading brain was built specifically for this platform's trading logic and management. It owns the business rules and IP."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Trading portal",
+      "sublabel": "Web client",
+      "pos": [31, 160],
+      "size": [160, 70]
+    },
+    {
+      "id": "mobile",
+      "type": "frontend",
+      "label": "Mobile apps",
+      "sublabel": "Mobile clients",
+      "pos": [31, 400],
+      "size": [160, 70]
+    },
+    {
+      "id": "gateway",
+      "type": "security",
+      "label": "zamport",
+      "sublabel": "Gateway",
+      "pos": [250, 280],
+      "size": [160, 70]
+    },
+    {
+      "id": "idp",
+      "type": "security",
+      "label": "IDP",
+      "sublabel": "Authentication",
+      "pos": [250, 60],
+      "size": [160, 70]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "Amiit.ai",
+      "sublabel": "Full AI assistant stack",
+      "pos": [484, 160],
+      "size": [160, 70]
+    },
+    {
+      "id": "mcp",
+      "type": "backend",
+      "label": "zaMCP",
+      "sublabel": "MCP server",
+      "pos": [702, 160],
+      "size": [160, 70]
+    },
+    {
+      "id": "portal",
+      "type": "backend",
+      "label": "Trading brain",
+      "sublabel": "Custom trading logic",
+      "pos": [484, 660],
+      "size": [160, 70]
+    },
+    {
+      "id": "docs",
+      "type": "cloud",
+      "label": "MinIO",
+      "sublabel": "Document storage",
+      "pos": [702, 420],
+      "size": [160, 70]
+    },
+    {
+      "id": "erp",
+      "type": "backend",
+      "label": "ERPNext",
+      "sublabel": "Accounting",
+      "pos": [920, 420],
+      "size": [160, 70]
+    },
+    {
+      "id": "vikunja",
+      "type": "backend",
+      "label": "Vikunja",
+      "sublabel": "Task management",
+      "pos": [1139, 420],
+      "size": [160, 70]
+    },
+    {
+      "id": "idpdb",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "IDP data",
+      "pos": [31, 60],
+      "size": [160, 60]
+    },
+    {
+      "id": "mcpdb",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "zaMCP data",
+      "pos": [702, 40],
+      "size": [160, 60]
+    },
+    {
+      "id": "portaldb",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Trading brain data",
+      "pos": [484, 490],
+      "size": [160, 60]
+    },
+    {
+      "id": "erpdb",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "ERPNext data",
+      "pos": [920, 550],
+      "size": [160, 60]
+    },
+    {
+      "id": "vikunjadb",
+      "type": "database",
+      "label": "Database",
+      "sublabel": "Vikunja data",
+      "pos": [1139, 550],
+      "size": [160, 60]
+    }
+  ],
+  "connections": [
+    {
+      "id": "web-to-gateway",
+      "from": "web",
+      "to": "gateway",
+      "label": "Requests",
+      "variant": "emphasis"
+    },
+    {
+      "id": "mobile-to-gateway",
+      "from": "mobile",
+      "to": "gateway",
+      "label": "Requests",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-to-idp",
+      "from": "gateway",
+      "to": "idp",
+      "label": "Auth check",
+      "variant": "security"
+    },
+    {
+      "id": "gateway-to-agent",
+      "from": "gateway",
+      "to": "agent",
+      "label": "Agent requests",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-to-portal",
+      "from": "gateway",
+      "to": "portal",
+      "label": "Trading requests",
+      "variant": "emphasis",
+      "labelDy": -25
+    },
+    {
+      "id": "agent-to-mcp",
+      "from": "agent",
+      "to": "mcp",
+      "label": "MCP tools",
+      "variant": "default"
+    },
+    {
+      "id": "mcp-to-docs",
+      "from": "mcp",
+      "to": "docs",
+      "label": "Service tools",
+      "variant": "default",
+      "labelDy": 32
+    },
+    {
+      "id": "mcp-to-erp",
+      "from": "mcp",
+      "to": "erp",
+      "label": "Service tools",
+      "variant": "default"
+    },
+    {
+      "id": "mcp-to-vikunja",
+      "from": "mcp",
+      "to": "vikunja",
+      "label": "Service tools",
+      "variant": "default"
+    },
+    {
+      "id": "portal-to-docs",
+      "from": "portal",
+      "to": "docs",
+      "label": "API",
+      "variant": "default"
+    },
+    {
+      "id": "portal-to-erp",
+      "from": "portal",
+      "to": "erp",
+      "label": "API",
+      "variant": "default"
+    },
+    {
+      "id": "portal-to-vikunja",
+      "from": "portal",
+      "to": "vikunja",
+      "label": "API",
+      "variant": "default"
+    },
+    {
+      "id": "idp-to-idpdb",
+      "from": "idp",
+      "to": "idpdb",
+      "label": "SQL",
+      "variant": "default"
+    },
+    {
+      "id": "mcp-to-mcpdb",
+      "from": "mcp",
+      "to": "mcpdb",
+      "label": "Read / write",
+      "variant": "default"
+    },
+    {
+      "id": "portal-to-portaldb",
+      "from": "portal",
+      "to": "portaldb",
+      "label": "SQL",
+      "variant": "default"
+    },
+    {
+      "id": "erp-to-erpdb",
+      "from": "erp",
+      "to": "erpdb",
+      "label": "SQL",
+      "variant": "default",
+      "labelDy": 32
+    },
+    {
+      "id": "vikunja-to-vikunjadb",
+      "from": "vikunja",
+      "to": "vikunjadb",
+      "label": "SQL",
+      "variant": "default",
+      "labelDy": 32
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "One gateway",
+      "items": [
+        "Trading portal and mobile apps connect to zamport.",
+        "zamport checks authentication with the IDP and routes requests to Amiit.ai or the trading brain."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Custom trading brain",
+      "items": [
+        "Built specifically for this platform's trading logic and management.",
+        "Owns the business rules and IP, with direct API access to MinIO, ERPNext, and Vikunja."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "AI personal assistant",
+      "items": [
+        "The full Amiit.ai stack is integrated here as the platform's AI personal assistant.",
+        "Its agent loop, memory, and tools support the trading workflows through zaMCP.",
+        "zaMCP connects to the project services and uses Redis for its own data."
+      ]
+    }
+  ]
+}

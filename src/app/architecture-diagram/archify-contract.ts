@@ -13,7 +13,6 @@ export const ARCHIFY_CONTRACT = {
     i18nData: 'archify-i18n-data',
     root: 'architecture-diagram',
   },
-  lightSchemeQuery: '(prefers-color-scheme: light)',
   preset: {
     default: 'classic',
   },
@@ -22,10 +21,6 @@ export const ARCHIFY_CONTRACT = {
     enabled: '1',
     present: 'present',
     theme: 'theme',
-  },
-  storage: {
-    motion: 'archify-motion',
-    theme: 'archify-theme',
   },
   theme: {
     dark: 'dark',

@@ -1,5 +1,7 @@
 import { createI18n } from 'vue-i18n'
 
+import { browserLanguage } from '../services/browser'
+
 export const LOCALE = {
   en: 'en',
   he: 'he',
@@ -24,11 +26,22 @@ const ENGLISH_MESSAGES = {
   },
   diagram: {
     alektions: {
+      coverAlt: 'Alektions map with clustered events, a selected news item, and the live events feed.',
       description:
         'Explore the architecture of a live election-events map: ingestion, geographic normalization, delivery, and the interactive frontend.',
       title: 'Alektions: Live Election-Events Map',
     },
+    amiit: {
+      description:
+        'An agentic assistant at the center of every interaction, using memory, durable state, and tools for tasks, knowledge, files, and secure credentials.',
+      title: 'Amiit.AI: Platform Architecture',
+    },
     back: 'Selected work',
+    commodity: {
+      description:
+        'A trading platform integrating the full Amiit.ai assistant stack with a custom trading brain built specifically for trading logic and management.',
+      title: 'Multi-Channel Commodity Trading Platform',
+    },
     failure: 'The interactive controls could not start. You can still read the diagram below.',
     label: 'Interactive architecture',
     open: 'Explore the architecture',
@@ -83,6 +96,7 @@ const ENGLISH_MESSAGES = {
     statusLabel: 'Production system',
     title: 'See',
   },
+  preferences: { dark: 'Dark', light: 'Light', system: 'System', theme: 'Color theme' },
   read: {
     emptyBody: 'New writing will appear here soon.',
     emptyTitle: 'The first essay is in progress.',
@@ -112,10 +126,21 @@ const HEBREW_MESSAGES = {
   },
   diagram: {
     alektions: {
+      coverAlt: 'מפת Alektions עם מקבצי אירועים, ידיעה נבחרת ופיד האירועים בזמן אמת.',
       description: 'ארכיטקטורה של מפת אירועי בחירות בזמן אמת: קליטת מידע, נרמול גאוגרפי, הפצה וממשק משתמש אינטראקטיבי.',
-      title: 'Alektions: מפת אירועי בחירות בזמן אמת',
+      title: 'עלקציות: מפת אירועי בחירות בזמן אמת',
+    },
+    amiit: {
+      description:
+        'עוזר מבוסס סוכן במרכז כל אינטראקציה, עם זיכרון, מצב מתמשך וכלים למשימות, ידע, קבצים ואחסון מאובטח של פרטי גישה.',
+      title: 'Amiit.AI: ארכיטקטורת הפלטפורמה',
     },
     back: 'עבודות נבחרות',
+    commodity: {
+      description:
+        'פלטפורמת מסחר המשלבת את מערכת העוזר המלאה של Amiit.ai עם ליבה ייעודית שפותחה במיוחד ללוגיקת המסחר ולניהולו.',
+      title: 'פלטפורמה רב ערוצית למסחר בסחורות',
+    },
     failure: 'לא ניתן להפעיל את הכלים האינטראקטיביים. אפשר עדיין לקרוא את התרשים למטה.',
     label: 'ארכיטקטורה אינטראקטיבית',
     open: 'לסיור בארכיטקטורה',
@@ -168,6 +193,7 @@ const HEBREW_MESSAGES = {
     statusLabel: 'מערכת בפרודקשן',
     title: 'עבודות',
   },
+  preferences: { dark: 'כהה', light: 'בהיר', system: 'מערכת', theme: 'ערכת צבעים' },
   read: {
     emptyBody: 'כתיבה חדשה תופיע כאן בקרוב.',
     emptyTitle: 'המאמר הראשון בתהליך כתיבה.',
@@ -186,7 +212,7 @@ const MESSAGES = {
 export const resolveLocale = (language: string): Locale =>
   language.toLowerCase().startsWith(LOCALE.he) ? LOCALE.he : LOCALE.en
 
-const browserLocale = (): Locale => resolveLocale(navigator.language)
+const browserLocale = (): Locale => resolveLocale(browserLanguage())
 
 export const i18n = createI18n({
   fallbackLocale: LOCALE.en,

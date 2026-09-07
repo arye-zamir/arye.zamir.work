@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 const TEST = {
-  controls: 'theme persistence, node finder, and semantic lens work through visible controls',
+  controls: 'footer theme persistence, node finder, and semantic lens work through visible controls',
   history: 'viewer state preserves page navigation and cleans up on exit',
   interaction: 'renders the Alektions diagram and supports exploration',
   layout: 'viewer header and canvas controls stay aligned on every viewport',
@@ -31,11 +31,12 @@ const UI = {
   hebrew: 'he',
   hebrewButton: 'עברית',
   light: 'light',
+  lightButton: 'Light',
   ltr: 'ltr',
   nextView: /^Open chapter 1 of 3:/,
   notFound: 'Off the map.',
   rtl: 'rtl',
-  theme: 'Toggle color theme',
+  theme: 'Dark',
   title: 'Alektions: Live Election-Events Map',
   true: 'true',
 }
@@ -116,6 +117,8 @@ test(TEST.stability, async ({ isMobile, page }) => {
 test(TEST.layout, async ({ page }, testInfo) => {
   await page.emulateMedia({ colorScheme: UI.dark })
   await page.goto(PATH.diagram)
+  await expect(page.locator(SELECTOR.diagram)).toHaveAttribute(ATTRIBUTE.theme, UI.dark)
+  await page.getByRole('button', { exact: true, name: UI.lightButton }).click()
   await expect(page.locator(SELECTOR.diagram)).toHaveAttribute(ATTRIBUTE.theme, UI.light)
   await expect(page.locator(SELECTOR.diagram)).not.toContainText(FORBIDDEN_COPY)
   const header = await page.locator(SELECTOR.header).boundingBox()
@@ -226,7 +229,7 @@ test(TEST.interaction, async ({ page }, testInfo) => {
 
 test(TEST.history, async ({ page }) => {
   await page.goto(PATH.see)
-  await page.getByRole('link', { name: UI.explore }).click()
+  await page.locator(`.text-link[href="${PATH.diagram}"]`).click()
   await expect(page.locator(SELECTOR.svg)).toBeVisible()
   await page.locator(SELECTOR.server).click()
   await expect(page).toHaveURL(PATTERN.focus)
@@ -246,7 +249,7 @@ test(TEST.history, async ({ page }) => {
 test(TEST.locale, async ({ page }) => {
   await page.goto(PATH.see)
   await page.getByRole('button', { exact: true, name: UI.hebrewButton }).click()
-  await page.locator(`a[href="${PATH.diagram}"]`).click()
+  await page.locator(`.portfolio-diagram h2 a[href="${PATH.diagram}"]`).click()
   await expect(page.locator(SELECTOR.html)).toHaveAttribute(ATTRIBUTE.direction, UI.rtl)
   await expect(page.locator(SELECTOR.diagram)).toHaveAttribute(ATTRIBUTE.direction, UI.ltr)
   await expect(page.locator(SELECTOR.diagram)).toHaveAttribute(ATTRIBUTE.language, UI.english)
@@ -278,6 +281,6 @@ test(TEST.split, async ({ page }) => {
   })
   await page.goto(PATH.home)
   await page.goto(PATH.see)
-  await expect(page.getByRole('link', { name: UI.explore })).toBeVisible()
+  await expect(page.locator(`.text-link[href="${PATH.diagram}"]`)).toBeVisible()
   expect(diagramAssets).toEqual([])
 })

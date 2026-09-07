@@ -1,8 +1,5 @@
-import { DIAGRAM } from '../../internal/diagrams'
-import svg from './assets/alektions-election-events-map.svg?raw'
-import cards from './payloads/alektions-election-events-map.cards.html?raw'
-import guidedViews from './payloads/alektions-election-events-map.guided.json?raw'
-import metadata from './payloads/alektions-election-events-map.meta.json'
+import type { DiagramId } from '../../internal/diagrams'
+
 import canvas from './shared/diagram-shell.html?raw'
 import guidedControls from './shared/guided-views.html?raw'
 import header from './shared/header.html?raw'
@@ -14,13 +11,23 @@ const TOKEN = {
   svg: '{{ARCHIFY_SVG}}',
 } as const
 
-export const ALEKTIONS_DIAGRAM = {
+interface DiagramPayload {
+  cards: string
+  guidedViews: string
+  heading: string
+  id: DiagramId
+  svg: string
+}
+
+export const createDiagram = ({ cards, guidedViews, heading, id, svg }: DiagramPayload) => ({
   canvas: canvas.replace(TOKEN.svg, () => svg),
   cards,
   guidedControls,
   guidedViews,
-  header: header.replace(TOKEN.heading, () => metadata.heading),
+  header: header.replace(TOKEN.heading, () => heading),
   i18n,
-  id: DIAGRAM.alektions.id,
+  id,
   toolbar,
-} as const
+})
+
+export type DiagramDefinition = ReturnType<typeof createDiagram>

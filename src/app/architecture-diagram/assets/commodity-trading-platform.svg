@@ -1,0 +1,324 @@
+<svg viewBox="0 0 1339 798" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+        <title id="archify-diagram-title">Multi-Channel Commodity Trading Platform</title>
+        <desc id="archify-diagram-description">The trading platform integrates the full Amiit.ai stack as its AI personal assistant. A separate trading brain was built specifically for the platform&#x27;s business logic and management. zamport routes authenticated requests to these services.</desc>
+        
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        
+
+
+        
+        <path data-edge-from="web" data-edge-to="gateway" data-edge-label="Requests" data-edge-key="0" data-edge-id="web-to-gateway" data-composition-points="191,195;220.5,195;220.5,308;250,308" d="M 191 195 L 212.5 195 Q 220.5 195 220.5 203 L 220.5 300 Q 220.5 308 228.5 308 L 250 308" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="mobile" data-edge-to="gateway" data-edge-label="Requests" data-edge-key="1" data-edge-id="mobile-to-gateway" data-composition-points="191,435;220.5,435;220.5,322;250,322" d="M 191 435 L 212.5 435 Q 220.5 435 220.5 427 L 220.5 330 Q 220.5 322 228.5 322 L 250 322" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="gateway" data-edge-to="idp" data-edge-label="Auth check" data-edge-key="2" data-edge-id="gateway-to-idp" data-composition-points="330,280;330,130" d="M 330 280 L 330 130" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="gateway" data-edge-to="agent" data-edge-label="Agent requests" data-edge-key="3" data-edge-id="gateway-to-agent" data-composition-points="410,308;447,308;447,195;484,195" d="M 410 308 L 439 308 Q 447 308 447 300 L 447 203 Q 447 195 455 195 L 484 195" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="gateway" data-edge-to="portal" data-edge-label="Trading requests" data-edge-key="4" data-edge-id="gateway-to-portal" data-composition-points="410,322;447,322;447,695;484,695" d="M 410 322 L 439 322 Q 447 322 447 330 L 447 687 Q 447 695 455 695 L 484 695" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="agent" data-edge-to="mcp" data-edge-label="MCP tools" data-edge-key="5" data-edge-id="agent-to-mcp" data-composition-points="644,195;702,195" d="M 644 195 L 702 195" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="mcp" data-edge-to="docs" data-edge-label="Service tools" data-edge-key="6" data-edge-id="mcp-to-docs" data-composition-points="782,230;782,420" d="M 782 230 L 782 420" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="mcp" data-edge-to="erp" data-edge-label="Service tools" data-edge-key="7" data-edge-id="mcp-to-erp" data-composition-points="862,188;891,188;891,448;920,448" d="M 862 188 L 883 188 Q 891 188 891 196 L 891 440 Q 891 448 899 448 L 920 448" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="mcp" data-edge-to="vikunja" data-edge-label="Service tools" data-edge-key="8" data-edge-id="mcp-to-vikunja" data-composition-points="862,202;1115,202;1115,448;1139,448" d="M 862 202 L 1107 202 Q 1115 202 1115 210 L 1115 440 Q 1115 448 1123 448 L 1139 448" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="portal" data-edge-to="docs" data-edge-label="API" data-edge-key="9" data-edge-id="portal-to-docs" data-composition-points="644,681;673,681;673,455;702,455" d="M 644 681 L 665 681 Q 673 681 673 673 L 673 463 Q 673 455 681 455 L 702 455" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="portal" data-edge-to="erp" data-edge-label="API" data-edge-key="10" data-edge-id="portal-to-erp" data-composition-points="644,695;896,695;896,462;920,462" d="M 644 695 L 888 695 Q 896 695 896 687 L 896 470 Q 896 462 904 462 L 920 462" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="portal" data-edge-to="vikunja" data-edge-label="API" data-edge-key="11" data-edge-id="portal-to-vikunja" data-composition-points="644,709;1115,709;1115,462;1139,462" d="M 644 709 L 1107 709 Q 1115 709 1115 701 L 1115 470 Q 1115 462 1123 462 L 1139 462" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="idp" data-edge-to="idpdb" data-edge-label="SQL" data-edge-key="12" data-edge-id="idp-to-idpdb" data-composition-points="250,95;191,95" d="M 250 95 L 191 95" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="mcp" data-edge-to="mcpdb" data-edge-label="Read / write" data-edge-key="13" data-edge-id="mcp-to-mcpdb" data-composition-points="782,160;782,100" d="M 782 160 L 782 100" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="portal" data-edge-to="portaldb" data-edge-label="SQL" data-edge-key="14" data-edge-id="portal-to-portaldb" data-composition-points="564,660;564,550" d="M 564 660 L 564 550" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="erp" data-edge-to="erpdb" data-edge-label="SQL" data-edge-key="15" data-edge-id="erp-to-erpdb" data-composition-points="1000,490;1000,550" d="M 1000 490 L 1000 550" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="vikunja" data-edge-to="vikunjadb" data-edge-label="SQL" data-edge-key="16" data-edge-id="vikunja-to-vikunjadb" data-composition-points="1219,490;1219,550" d="M 1219 490 L 1219 550" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        
+        <g id="node-web" data-node-id="web" data-node-label="Trading portal" tabindex="0" role="button" aria-label="Focus Trading portal, Web client, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="Web client" data-node-context="Architecture component">
+          <title>Trading portal · Web client · Architecture component</title>
+          <rect x="31" y="160" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="31" y="160" width="160" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(37 166) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2"/>
+            <path d="M2 6.5h12"/>
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="111" y="193" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Trading portal</text>
+        <text data-detail="context" x="111" y="209" class="t-muted" font-size="9" text-anchor="middle">Web client</text>
+        </g>
+
+        <g id="node-mobile" data-node-id="mobile" data-node-label="Mobile apps" tabindex="0" role="button" aria-label="Focus Mobile apps, Mobile clients, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="Mobile clients" data-node-context="Architecture component">
+          <title>Mobile apps · Mobile clients · Architecture component</title>
+          <rect x="31" y="400" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="31" y="400" width="160" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(37 406) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2"/>
+            <path d="M2 6.5h12"/>
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="111" y="433" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Mobile apps</text>
+        <text data-detail="context" x="111" y="449" class="t-muted" font-size="9" text-anchor="middle">Mobile clients</text>
+        </g>
+
+        <g id="node-gateway" data-node-id="gateway" data-node-label="zamport" tabindex="0" role="button" aria-label="Focus zamport, Gateway, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="Gateway" data-node-context="Architecture component">
+          <title>zamport · Gateway · Architecture component</title>
+          <rect x="250" y="280" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="250" y="280" width="160" height="70" rx="6" class="c-security" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(256 286) scale(0.6875)">
+            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
+            <path d="m5.8 8 1.5 1.5 3-3"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="330" y="313" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">zamport</text>
+        <text data-detail="context" x="330" y="329" class="t-muted" font-size="9" text-anchor="middle">Gateway</text>
+        </g>
+
+        <g id="node-idp" data-node-id="idp" data-node-label="IDP" tabindex="0" role="button" aria-label="Focus IDP, Authentication, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="Authentication" data-node-context="Architecture component">
+          <title>IDP · Authentication · Architecture component</title>
+          <rect x="250" y="60" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="250" y="60" width="160" height="70" rx="6" class="c-security" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(256 66) scale(0.6875)">
+            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
+            <path d="m5.8 8 1.5 1.5 3-3"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="330" y="93" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">IDP</text>
+        <text data-detail="context" x="330" y="109" class="t-muted" font-size="9" text-anchor="middle">Authentication</text>
+        </g>
+
+        <g id="node-agent" data-node-id="agent" data-node-label="Amiit.ai" tabindex="0" role="button" aria-label="Focus Amiit.ai, Full AI assistant stack, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Full AI assistant stack" data-node-context="Architecture component">
+          <title>Amiit.ai · Full AI assistant stack · Architecture component</title>
+          <rect x="484" y="160" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="484" y="160" width="160" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(490 166) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="564" y="193" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Amiit.ai</text>
+        <text data-detail="context" x="564" y="209" class="t-muted" font-size="9" text-anchor="middle">Full AI assistant stack</text>
+        </g>
+
+        <g id="node-mcp" data-node-id="mcp" data-node-label="zaMCP" tabindex="0" role="button" aria-label="Focus zaMCP, MCP server, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="MCP server" data-node-context="Architecture component">
+          <title>zaMCP · MCP server · Architecture component</title>
+          <rect x="702" y="160" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="702" y="160" width="160" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(708 166) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="782" y="193" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">zaMCP</text>
+        <text data-detail="context" x="782" y="209" class="t-muted" font-size="9" text-anchor="middle">MCP server</text>
+        </g>
+
+        <g id="node-portal" data-node-id="portal" data-node-label="Trading brain" tabindex="0" role="button" aria-label="Focus Trading brain, Custom trading logic, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Custom trading logic" data-node-context="Architecture component">
+          <title>Trading brain · Custom trading logic · Architecture component</title>
+          <rect x="484" y="660" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="484" y="660" width="160" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(490 666) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="564" y="693" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Trading brain</text>
+        <text data-detail="context" x="564" y="709" class="t-muted" font-size="9" text-anchor="middle">Custom trading logic</text>
+        </g>
+
+        <g id="node-docs" data-node-id="docs" data-node-label="MinIO" tabindex="0" role="button" aria-label="Focus MinIO, Document storage, Architecture component" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Document storage" data-node-context="Architecture component">
+          <title>MinIO · Document storage · Architecture component</title>
+          <rect x="702" y="420" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="702" y="420" width="160" height="70" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(708 426) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="782" y="453" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">MinIO</text>
+        <text data-detail="context" x="782" y="469" class="t-muted" font-size="9" text-anchor="middle">Document storage</text>
+        </g>
+
+        <g id="node-erp" data-node-id="erp" data-node-label="ERPNext" tabindex="0" role="button" aria-label="Focus ERPNext, Accounting, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Accounting" data-node-context="Architecture component">
+          <title>ERPNext · Accounting · Architecture component</title>
+          <rect x="920" y="420" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="920" y="420" width="160" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 426) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1000" y="453" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ERPNext</text>
+        <text data-detail="context" x="1000" y="469" class="t-muted" font-size="9" text-anchor="middle">Accounting</text>
+        </g>
+
+        <g id="node-vikunja" data-node-id="vikunja" data-node-label="Vikunja" tabindex="0" role="button" aria-label="Focus Vikunja, Task management, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Task management" data-node-context="Architecture component">
+          <title>Vikunja · Task management · Architecture component</title>
+          <rect x="1139" y="420" width="160" height="70" rx="6" class="c-mask"/>
+          <rect x="1139" y="420" width="160" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1145 426) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1219" y="453" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Vikunja</text>
+        <text data-detail="context" x="1219" y="469" class="t-muted" font-size="9" text-anchor="middle">Task management</text>
+        </g>
+
+        <g id="node-idpdb" data-node-id="idpdb" data-node-label="PostgreSQL" tabindex="0" role="button" aria-label="Focus PostgreSQL, IDP data, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="IDP data" data-node-context="Architecture component">
+          <title>PostgreSQL · IDP data · Architecture component</title>
+          <rect x="31" y="60" width="160" height="60" rx="6" class="c-mask"/>
+          <rect x="31" y="60" width="160" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(37 66) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="111" y="88" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL</text>
+        <text data-detail="context" x="111" y="104" class="t-muted" font-size="9" text-anchor="middle">IDP data</text>
+        </g>
+
+        <g id="node-mcpdb" data-node-id="mcpdb" data-node-label="Redis" tabindex="0" role="button" aria-label="Focus Redis, zaMCP data, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="zaMCP data" data-node-context="Architecture component">
+          <title>Redis · zaMCP data · Architecture component</title>
+          <rect x="702" y="40" width="160" height="60" rx="6" class="c-mask"/>
+          <rect x="702" y="40" width="160" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(708 46) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="782" y="68" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Redis</text>
+        <text data-detail="context" x="782" y="84" class="t-muted" font-size="9" text-anchor="middle">zaMCP data</text>
+        </g>
+
+        <g id="node-portaldb" data-node-id="portaldb" data-node-label="PostgreSQL" tabindex="0" role="button" aria-label="Focus PostgreSQL, Trading brain data, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="Trading brain data" data-node-context="Architecture component">
+          <title>PostgreSQL · Trading brain data · Architecture component</title>
+          <rect x="484" y="490" width="160" height="60" rx="6" class="c-mask"/>
+          <rect x="484" y="490" width="160" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(490 496) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="564" y="518" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL</text>
+        <text data-detail="context" x="564" y="534" class="t-muted" font-size="9" text-anchor="middle">Trading brain data</text>
+        </g>
+
+        <g id="node-erpdb" data-node-id="erpdb" data-node-label="PostgreSQL" tabindex="0" role="button" aria-label="Focus PostgreSQL, ERPNext data, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="ERPNext data" data-node-context="Architecture component">
+          <title>PostgreSQL · ERPNext data · Architecture component</title>
+          <rect x="920" y="550" width="160" height="60" rx="6" class="c-mask"/>
+          <rect x="920" y="550" width="160" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(926 556) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1000" y="578" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL</text>
+        <text data-detail="context" x="1000" y="594" class="t-muted" font-size="9" text-anchor="middle">ERPNext data</text>
+        </g>
+
+        <g id="node-vikunjadb" data-node-id="vikunjadb" data-node-label="Database" tabindex="0" role="button" aria-label="Focus Database, Vikunja data, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="Vikunja data" data-node-context="Architecture component">
+          <title>Database · Vikunja data · Architecture component</title>
+          <rect x="1139" y="550" width="160" height="60" rx="6" class="c-mask"/>
+          <rect x="1139" y="550" width="160" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1145 556) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1219" y="578" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Database</text>
+        <text data-detail="context" x="1219" y="594" class="t-muted" font-size="9" text-anchor="middle">Vikunja data</text>
+        </g>
+
+        
+        <g data-detail="context" data-edge-from="web" data-edge-to="gateway" data-edge-label="Requests" data-edge-key="0" data-edge-id="web-to-gateway">
+          <rect x="196.3" y="231.5" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="220.5" y="241.5" class="t-backend" font-size="8" text-anchor="middle">Requests</text>
+        </g>
+        <g data-detail="context" data-edge-from="mobile" data-edge-to="gateway" data-edge-label="Requests" data-edge-key="1" data-edge-id="mobile-to-gateway">
+          <rect x="196.3" y="358.5" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="220.5" y="368.5" class="t-backend" font-size="8" text-anchor="middle">Requests</text>
+        </g>
+        <g data-detail="context" data-edge-from="gateway" data-edge-to="idp" data-edge-label="Auth check" data-edge-key="2" data-edge-id="gateway-to-idp">
+          <rect x="301" y="260" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="330" y="270" class="t-security" font-size="8" text-anchor="middle">Auth check</text>
+        </g>
+        <g data-detail="context" data-edge-from="gateway" data-edge-to="agent" data-edge-label="Agent requests" data-edge-key="3" data-edge-id="gateway-to-agent">
+          <rect x="408.4" y="231.5" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="447" y="241.5" class="t-backend" font-size="8" text-anchor="middle">Agent requests</text>
+        </g>
+        <g data-detail="context" data-edge-from="gateway" data-edge-to="portal" data-edge-label="Trading requests" data-edge-key="4" data-edge-id="gateway-to-portal">
+          <rect x="403.6" y="463.5" width="86.8" height="14" rx="3" class="c-mask"/>
+          <text x="447" y="473.5" class="t-backend" font-size="8" text-anchor="middle">Trading requests</text>
+        </g>
+        <g data-detail="context" data-edge-from="agent" data-edge-to="mcp" data-edge-label="MCP tools" data-edge-key="5" data-edge-id="agent-to-mcp">
+          <rect x="646.4" y="175" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="673" y="185" class="t-muted" font-size="8" text-anchor="middle">MCP tools</text>
+        </g>
+        <g data-detail="context" data-edge-from="mcp" data-edge-to="docs" data-edge-label="Service tools" data-edge-key="6" data-edge-id="mcp-to-docs">
+          <rect x="745.8" y="242" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="782" y="252" class="t-muted" font-size="8" text-anchor="middle">Service tools</text>
+        </g>
+        <g data-detail="context" data-edge-from="mcp" data-edge-to="erp" data-edge-label="Service tools" data-edge-key="7" data-edge-id="mcp-to-erp">
+          <rect x="854.8" y="298" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="891" y="308" class="t-muted" font-size="8" text-anchor="middle">Service tools</text>
+        </g>
+        <g data-detail="context" data-edge-from="mcp" data-edge-to="vikunja" data-edge-label="Service tools" data-edge-key="8" data-edge-id="mcp-to-vikunja">
+          <rect x="1078.8" y="305" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="1115" y="315" class="t-muted" font-size="8" text-anchor="middle">Service tools</text>
+        </g>
+        <g data-detail="context" data-edge-from="portal" data-edge-to="docs" data-edge-label="API" data-edge-key="9" data-edge-id="portal-to-docs">
+          <rect x="658" y="548" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="673" y="558" class="t-muted" font-size="8" text-anchor="middle">API</text>
+        </g>
+        <g data-detail="context" data-edge-from="portal" data-edge-to="erp" data-edge-label="API" data-edge-key="10" data-edge-id="portal-to-erp">
+          <rect x="881" y="558.5" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="896" y="568.5" class="t-muted" font-size="8" text-anchor="middle">API</text>
+        </g>
+        <g data-detail="context" data-edge-from="portal" data-edge-to="vikunja" data-edge-label="API" data-edge-key="11" data-edge-id="portal-to-vikunja">
+          <rect x="1100" y="565.5" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="1115" y="575.5" class="t-muted" font-size="8" text-anchor="middle">API</text>
+        </g>
+        <g data-detail="context" data-edge-from="idp" data-edge-to="idpdb" data-edge-label="SQL" data-edge-key="12" data-edge-id="idp-to-idpdb">
+          <rect x="205.5" y="75" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="220.5" y="85" class="t-muted" font-size="8" text-anchor="middle">SQL</text>
+        </g>
+        <g data-detail="context" data-edge-from="mcp" data-edge-to="mcpdb" data-edge-label="Read / write" data-edge-key="13" data-edge-id="mcp-to-mcpdb">
+          <rect x="748.2" y="140" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="782" y="150" class="t-muted" font-size="8" text-anchor="middle">Read / write</text>
+        </g>
+        <g data-detail="context" data-edge-from="portal" data-edge-to="portaldb" data-edge-label="SQL" data-edge-key="14" data-edge-id="portal-to-portaldb">
+          <rect x="549" y="640" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="564" y="650" class="t-muted" font-size="8" text-anchor="middle">SQL</text>
+        </g>
+        <g data-detail="context" data-edge-from="erp" data-edge-to="erpdb" data-edge-label="SQL" data-edge-key="15" data-edge-id="erp-to-erpdb">
+          <rect x="985" y="502" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="1000" y="512" class="t-muted" font-size="8" text-anchor="middle">SQL</text>
+        </g>
+        <g data-detail="context" data-edge-from="vikunja" data-edge-to="vikunjadb" data-edge-label="SQL" data-edge-key="16" data-edge-id="vikunja-to-vikunjadb">
+          <rect x="1204" y="502" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="1219" y="512" class="t-muted" font-size="8" text-anchor="middle">SQL</text>
+        </g>
+
+        
+
+
+        
+        <g data-legend="" data-legend-bridge="">
+          <text x="40" y="762" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="782" data-legend-width="83">
+            <rect x="40" y="773" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
+            <text x="62" y="782" class="t-muted" font-size="10" font-weight="500">Frontend</text>
+          </g>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="145" data-legend-baseline="782" data-legend-width="78">
+            <rect x="145" y="773" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="167" y="782" class="t-muted" font-size="10" font-weight="500">Backend</text>
+          </g>
+          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Database" data-legend-x="245" data-legend-baseline="782" data-legend-width="83">
+            <rect x="245" y="773" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="267" y="782" class="t-muted" font-size="10" font-weight="500">Database</text>
+          </g>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="350" data-legend-baseline="782" data-legend-width="68">
+            <rect x="350" y="773" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
+            <text x="372" y="782" class="t-muted" font-size="10" font-weight="500">Cloud</text>
+          </g>
+          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="Security" data-legend-x="440" data-legend-baseline="782" data-legend-width="83">
+            <rect x="440" y="773" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
+            <text x="462" y="782" class="t-muted" font-size="10" font-weight="500">Security</text>
+          </g>
+        </g>
+      </svg>

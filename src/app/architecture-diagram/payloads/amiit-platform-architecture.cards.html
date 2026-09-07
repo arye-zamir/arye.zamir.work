@@ -1,0 +1,59 @@
+<div class="cards">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-dot cyan"></div>
+      <h3>Product entry</h3>
+    </div>
+    <ul>
+      <li>&bull; app.amiit.ai serves /{accountSlug}/chat and /{accountSlug}/manage as an installable PWA</li>
+      <li>&bull; api.amiit.ai is the only backend door: no internal host ever appears in devtools</li>
+      <li>&bull; Messaging adapters translate incoming requests into a shared channel.v1 contract</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-dot emerald"></div>
+      <h3>Amiit agent loop</h3>
+    </div>
+    <ul>
+      <li>
+        &bull; Amiit handles each request through an agent loop, drawing on Agentic Memory for context and calling tools
+        through zaMCP
+      </li>
+      <li>
+        &bull; The agent can work with tasks in Vikunja, knowledge in Forgejo, files in MinIO, and secure credentials in
+        Bitwarden
+      </li>
+      <li>&bull; Redis holds durable state for the agent loop</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-dot rose"></div>
+      <h3>Identity and trust</h3>
+    </div>
+    <ul>
+      <li>
+        &bull; iam-idp resolves the tenant from the token claim, RBAC/PEP default-deny; every service verifies bearer
+        JWTs against its JWKS, fail-closed
+      </li>
+      <li>
+        &bull; Vikunja and Forgejo web UIs sign in only through iam-idp OIDC, and the IDP admits admins alone; MinIO
+        takes S3 credentials from the same IDP through STS web identity
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-dot amber"></div>
+      <h3>Delivery and environments</h3>
+    </div>
+    <ul>
+      <li>&bull; local dev → IP-gated staging → canary prod, all on one code path</li>
+      <li>&bull; CI runs the gates already inside the Docker builds; iam-idp ships as a signed GHCR release image</li>
+    </ul>
+  </div>
+</div>

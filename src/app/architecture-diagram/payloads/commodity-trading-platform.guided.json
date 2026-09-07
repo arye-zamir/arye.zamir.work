@@ -1,0 +1,20 @@
+[
+  {
+    "id": "channels",
+    "label": "Gateway and authentication",
+    "focus": ["web", "mobile", "gateway", "idp", "agent", "portal", "idpdb", "portaldb"],
+    "note": "Web and mobile enter through zamport. It checks authentication with the IDP, then routes to Amiit.ai or the trading brain."
+  },
+  {
+    "id": "identity",
+    "label": "AI personal assistant",
+    "focus": ["agent", "mcp", "docs", "erp", "vikunja", "mcpdb", "erpdb", "vikunjadb"],
+    "note": "The full Amiit.ai stack serves as the trading platform's AI personal assistant and accesses project services through zaMCP."
+  },
+  {
+    "id": "domain",
+    "label": "Business core",
+    "focus": ["portal", "docs", "erp", "vikunja", "portaldb", "erpdb", "vikunjadb"],
+    "note": "The trading brain was built specifically for this platform's trading logic and management. It owns the business rules and IP."
+  }
+]

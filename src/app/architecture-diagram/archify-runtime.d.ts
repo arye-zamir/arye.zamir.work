@@ -1,4 +1,4 @@
-import type { ArchifyRuntimeScope } from './runtime-scope'
+import type { ArchifyRuntimeScope } from '../../services/diagram-runtime'
 
 export type ArchifyRuntimeApi = Record<string, unknown>
 

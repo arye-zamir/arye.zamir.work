@@ -19,7 +19,6 @@ export const ROUTE_PATH = {
 } as const
 
 const ROUTE_NAME = {
-  diagram: 'diagram',
   home: 'home',
   notFound: 'not-found',
   read: 'read',
@@ -53,13 +52,31 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      component: () => import('../app/views/DiagramView.vue'),
+      component: () => import('../app/views/AlektionsDiagramView.vue'),
       meta: {
         descriptionKey: DIAGRAM.alektions.descriptionKey,
         titleKey: DIAGRAM.alektions.titleKey,
       },
-      name: ROUTE_NAME.diagram,
+      name: DIAGRAM.alektions.id,
       path: DIAGRAM.alektions.path,
+    },
+    {
+      component: () => import('../app/views/AmiitDiagramView.vue'),
+      meta: {
+        descriptionKey: DIAGRAM.amiit.descriptionKey,
+        titleKey: DIAGRAM.amiit.titleKey,
+      },
+      name: DIAGRAM.amiit.id,
+      path: DIAGRAM.amiit.path,
+    },
+    {
+      component: () => import('../app/views/CommodityDiagramView.vue'),
+      meta: {
+        descriptionKey: DIAGRAM.commodity.descriptionKey,
+        titleKey: DIAGRAM.commodity.titleKey,
+      },
+      name: DIAGRAM.commodity.id,
+      path: DIAGRAM.commodity.path,
     },
     {
       component: () => import('../app/views/HomeView.vue'),

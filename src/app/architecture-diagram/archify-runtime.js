@@ -1,19 +1,23 @@
+import { storage } from '../../services/browser'
+import { STORAGE_KEY, STORAGE_TYPE } from '../../services/storage'
+import { theme } from '../../services/theme'
 import { ARCHIFY_CONTRACT } from './archify-contract'
-import { resolveInitialTheme } from './initial-state'
+import { readThemeOverride } from './initial-state'
 const mountArchifyRuntime = (scope) => {
   const {
+    browser,
+    browserNavigator,
     cancelAnimationFrame,
     clearTimeout,
     document,
     history,
     location,
     MutationObserver,
-    navigator,
+    onDispose,
     requestAnimationFrame,
     ResizeObserver,
     setTimeout,
     URL,
-    window,
   } = scope
   const Archify = {}
   const ARCHIFY_FAILURE_PREFIX = 'Archify viewer fallback'
@@ -90,38 +94,36 @@ const mountArchifyRuntime = (scope) => {
     })
   }
   Archify.theme = (function () {
-    const STORAGE_KEY = ARCHIFY_CONTRACT.storage.theme
+    const UI = { attribute: 'data-theme', preference: 'data-theme-preference' }
     const html = document.documentElement
-    const btn = document.getElementById('btn-theme')
-    const label = document.getElementById('theme-label')
-    function writeStored(value) {
-      try {
-        localStorage.setItem(STORAGE_KEY, value)
-      } catch (_) {
-        reportArchifyFailure(_)
-      }
+    let override = readThemeOverride()
+    const apply = () => {
+      const preference = override ?? theme.getPreference()
+      html.setAttribute(UI.attribute, theme.resolve(preference))
+      html.setAttribute(UI.preference, preference)
     }
-    function apply(theme) {
-      html.setAttribute('data-theme', theme)
-      label.textContent = viewerText(theme === 'dark' ? 'viewer.theme.dark' : 'viewer.theme.light')
-      btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false')
+    const toggle = () => {
+      override = null
+      theme.cycle()
+      apply()
     }
-    function toggle() {
-      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-      apply(next)
-      writeStored(next)
-    }
-    apply(resolveInitialTheme())
-    btn.addEventListener('click', toggle)
+    let initial = true
+    onDispose(
+      theme.subscribe(() => {
+        if (!initial) override = null
+        initial = false
+        apply()
+      }),
+    )
     return { toggle }
   })()
   Archify.motionGovernor = (function () {
-    const STORAGE_KEY = ARCHIFY_CONTRACT.storage.motion
+    const MOTION_KEY = STORAGE_KEY.motion
     const html = document.documentElement
     const svg = document.querySelector('.diagram-container svg')
     const btn = document.getElementById('btn-motion')
     const label = document.getElementById('motion-label')
-    const motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null
+    const motionQuery = browser.matchMedia ? browser.matchMedia('(prefers-reduced-motion: reduce)') : null
     const capable = !!(svg && svg.getAttribute('data-animation') === 'trace')
     let readerPaused = false
     const suspensions = Object.create(null)
@@ -164,21 +166,11 @@ const mountArchifyRuntime = (scope) => {
       html.removeAttribute('data-ambient-settle-reason')
       return true
     }
-    function readStored() {
-      try {
-        return localStorage.getItem(STORAGE_KEY)
-      } catch (_) {
-        reportArchifyFailure(_)
-        return null
-      }
-    }
-    function writeStored() {
-      try {
-        if (readerPaused) localStorage.setItem(STORAGE_KEY, 'still')
-        else localStorage.removeItem(STORAGE_KEY)
-      } catch (_) {
-        reportArchifyFailure(_)
-      }
+    const readStored = () => storage.get(MOTION_KEY)
+    const writeStored = () => {
+      const paused = 'still'
+      if (readerPaused) storage.set(MOTION_KEY, paused, STORAGE_TYPE.str)
+      else storage.remove(MOTION_KEY)
     }
     function reducedMotion() {
       return !!(motionQuery && motionQuery.matches)
@@ -564,8 +556,8 @@ const mountArchifyRuntime = (scope) => {
     let reachabilityMode = null
     let activeReachability = null
     const svgNamespace = 'http://www.w3.org/2000/svg'
-    const reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null
-    const finePointerQuery = window.matchMedia ? window.matchMedia('(hover: hover) and (pointer: fine)') : null
+    const reducedMotionQuery = browser.matchMedia ? browser.matchMedia('(prefers-reduced-motion: reduce)') : null
+    const finePointerQuery = browser.matchMedia ? browser.matchMedia('(hover: hover) and (pointer: fine)') : null
     function nodes() {
       return Array.prototype.slice.call(svg.querySelectorAll('[data-node-id]'))
     }
@@ -1375,7 +1367,7 @@ const mountArchifyRuntime = (scope) => {
     }
     function clearRelationshipPreview(options) {
       options = options || {}
-      if (directPreviewTimer) window.clearTimeout(directPreviewTimer)
+      if (directPreviewTimer) browser.clearTimeout(directPreviewTimer)
       directPreviewTimer = null
       removeRelationshipPulse()
       activeRelationshipPreview = null
@@ -1456,9 +1448,9 @@ const mountArchifyRuntime = (scope) => {
       )
     }
     function scheduleDirectRelationshipPreview(target) {
-      if (directPreviewTimer) window.clearTimeout(directPreviewTimer)
+      if (directPreviewTimer) browser.clearTimeout(directPreviewTimer)
       if (pinnedRelationshipKey) return
-      directPreviewTimer = window.setTimeout(
+      directPreviewTimer = browser.setTimeout(
         function () {
           directPreviewTimer = null
           if (pinnedRelationshipKey || hoveredRelationship !== target || directRelationshipBlocked()) return
@@ -1486,7 +1478,7 @@ const mountArchifyRuntime = (scope) => {
     function inspectRelationship(key, options) {
       options = options || {}
       if (html.getAttribute('data-embed') === 'true') return false
-      if (directPreviewTimer) window.clearTimeout(directPreviewTimer)
+      if (directPreviewTimer) browser.clearTimeout(directPreviewTimer)
       directPreviewTimer = null
       hoveredRelationship = null
       focusedRelationship = null
@@ -1767,14 +1759,14 @@ const mountArchifyRuntime = (scope) => {
       if (!node) return
       const containerRect = container.getBoundingClientRect()
       const nodeRect = node.getBoundingClientRect()
-      if (containerRect.bottom <= 0 || containerRect.top >= window.innerHeight) return
-      const padding = window.innerWidth <= 720 ? 8 : 16
+      if (containerRect.bottom <= 0 || containerRect.top >= browser.innerHeight) return
+      const padding = browser.innerWidth <= 720 ? 8 : 16
       const visibleTop = Math.max(padding, -containerRect.top + padding)
-      const visibleBottom = Math.min(containerRect.height - padding, window.innerHeight - containerRect.top - padding)
+      const visibleBottom = Math.min(containerRect.height - padding, browser.innerHeight - containerRect.top - padding)
       const maxTop = Math.max(padding, visibleBottom - chip.offsetHeight)
       const minTop = Math.min(visibleTop, maxTop)
       const nodeCenter = nodeRect.top - containerRect.top + nodeRect.height / 2
-      const mobile = window.innerWidth <= 720
+      const mobile = browser.innerWidth <= 720
       const previewingOnMobile = mobile && chip.getAttribute('data-relationship-previewing') === 'true'
       const compactOnMobile = mobile && chip.getAttribute('data-relations-expanded') !== 'true'
       let preferred
@@ -1807,7 +1799,7 @@ const mountArchifyRuntime = (scope) => {
       )
         .filter(function (element) {
           if (!element || element.hidden) return false
-          const style = window.getComputedStyle(element)
+          const style = browser.getComputedStyle(element)
           return style.display !== 'none' && style.visibility !== 'hidden'
         })
         .map(function (element) {
@@ -2051,8 +2043,8 @@ const mountArchifyRuntime = (scope) => {
           ? '#relation=' + encodeURIComponent(relationId)
           : '#focus=' + encodeURIComponent(activeIds[0]) + (reachabilityMode ? '&reach=' + reachabilityMode : ''))
       const copy =
-        navigator.clipboard && typeof navigator.clipboard.writeText === 'function'
-          ? navigator.clipboard
+        browserNavigator.clipboard && typeof browserNavigator.clipboard.writeText === 'function'
+          ? browserNavigator.clipboard
               .writeText(value)
               .then(function () {
                 return true
@@ -2070,7 +2062,7 @@ const mountArchifyRuntime = (scope) => {
             ? viewerText(relationId ? 'viewer.passport.copy.pinned.success' : 'viewer.passport.copy.focused.success')
             : viewerText(relationId ? 'viewer.passport.copy.pinned.failed' : 'viewer.passport.copy.focused.failed'),
         )
-        window.setTimeout(function () {
+        browser.setTimeout(function () {
           renderRelationshipCopyAction()
         }, 1600)
         return copied
@@ -2193,8 +2185,8 @@ const mountArchifyRuntime = (scope) => {
       },
       true,
     )
-    window.addEventListener('scroll', requestLensPlacement, { passive: true })
-    window.addEventListener('resize', requestLensPlacement)
+    browser.addEventListener('scroll', requestLensPlacement, { passive: true })
+    browser.addEventListener('resize', requestLensPlacement)
     container.addEventListener('scroll', requestLensPlacement, { passive: true })
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) removeRelationshipPulse()
@@ -2231,7 +2223,7 @@ const mountArchifyRuntime = (scope) => {
         reportArchifyFailure(_)
       }
     }
-    window.addEventListener('hashchange', syncFocusFromHash)
+    browser.addEventListener('hashchange', syncFocusFromHash)
     syncFocusFromHash()
     return {
       active: function () {
@@ -2289,10 +2281,10 @@ const mountArchifyRuntime = (scope) => {
       )
     }
     function finePointer() {
-      return !window.matchMedia || window.matchMedia('(hover: hover) and (pointer: fine)').matches
+      return !browser.matchMedia || browser.matchMedia('(hover: hover) and (pointer: fine)').matches
     }
     function reducedMotion() {
-      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      return !!(browser.matchMedia && browser.matchMedia('(prefers-reduced-motion: reduce)').matches)
     }
     function blocked() {
       return (
@@ -2317,7 +2309,7 @@ const mountArchifyRuntime = (scope) => {
     }
     function clear(options) {
       options = options || {}
-      if (enterTimer) window.clearTimeout(enterTimer)
+      if (enterTimer) browser.clearTimeout(enterTimer)
       enterTimer = null
       activeId = null
       svg.removeAttribute('data-intent-trace-active')
@@ -2427,8 +2419,8 @@ const mountArchifyRuntime = (scope) => {
       return true
     }
     function schedule(node) {
-      if (enterTimer) window.clearTimeout(enterTimer)
-      enterTimer = window.setTimeout(
+      if (enterTimer) browser.clearTimeout(enterTimer)
+      enterTimer = browser.setTimeout(
         function () {
           enterTimer = null
           if (hoveredNode === node) show(node.getAttribute('data-node-id'), { announce: false })
@@ -2472,7 +2464,7 @@ const mountArchifyRuntime = (scope) => {
     container.addEventListener('pointerdown', function (event) {
       if (!event.target.closest('[data-node-id]')) clear({ announce: false })
     })
-    window.addEventListener('blur', function () {
+    browser.addEventListener('blur', function () {
       clear({ announce: false })
     })
     return {
@@ -2576,7 +2568,7 @@ const mountArchifyRuntime = (scope) => {
     panel.setAttribute('data-story-follow-min-dwell-ms', String(STORY_FOLLOW_MIN_DWELL_MS))
     buildChapterIndex()
     function reducedMotion() {
-      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      return !!(browser.matchMedia && browser.matchMedia('(prefers-reduced-motion: reduce)').matches)
     }
     function findNode(id) {
       return (
@@ -2624,7 +2616,7 @@ const mountArchifyRuntime = (scope) => {
     function handoffMotionAllowed() {
       if (document.hidden || reducedMotion()) return false
       if (document.documentElement.getAttribute('data-embed') === 'true') return false
-      if (window.matchMedia && window.matchMedia('print').matches) return false
+      if (browser.matchMedia && browser.matchMedia('print').matches) return false
       return !(Archify.motionGovernor && Archify.motionGovernor.capable && Archify.motionGovernor.isPaused())
     }
     function classifyHandoff(delta, anchor) {
@@ -2920,7 +2912,7 @@ const mountArchifyRuntime = (scope) => {
     function chapterPreviewBlocked() {
       if (document.hidden || playing || currentHandoff) return true
       if (document.documentElement.getAttribute('data-embed') === 'true') return true
-      if (window.matchMedia && window.matchMedia('print').matches) return true
+      if (browser.matchMedia && browser.matchMedia('print').matches) return true
       if (svg.hasAttribute('data-route-picking') || svg.hasAttribute('data-route-active')) return true
       if (svg.hasAttribute('data-lens-active') || svg.hasAttribute('data-legend-preview-active')) return true
       if (svg.hasAttribute('data-relationship-preview-active') || svg.hasAttribute('data-intent-trace-active'))
@@ -3021,7 +3013,7 @@ const mountArchifyRuntime = (scope) => {
       return syncChapterPreview()
     }
     function hoverCapable() {
-      return !!(window.matchMedia && window.matchMedia('(hover: hover)').matches)
+      return !!(browser.matchMedia && browser.matchMedia('(hover: hover)').matches)
     }
     function sharePlaybackRequested() {
       try {
@@ -3391,8 +3383,8 @@ const mountArchifyRuntime = (scope) => {
       const value = storyMomentLink()
       if (!value) return Promise.resolve(false)
       const copy =
-        navigator.clipboard && typeof navigator.clipboard.writeText === 'function'
-          ? navigator.clipboard
+        browserNavigator.clipboard && typeof browserNavigator.clipboard.writeText === 'function'
+          ? browserNavigator.clipboard
               .writeText(value)
               .then(function () {
                 return true
@@ -3427,12 +3419,12 @@ const mountArchifyRuntime = (scope) => {
         document.documentElement.getAttribute('data-share-playback') !== 'true'
       )
         return false
-      if (window.matchMedia && window.matchMedia('print').matches) return false
+      if (browser.matchMedia && browser.matchMedia('print').matches) return false
       return !(Archify.motionGovernor && Archify.motionGovernor.isPaused())
     }
     function storyAutomaticPlaybackAllowed() {
       if (document.hidden || reducedMotion()) return false
-      if (window.matchMedia && window.matchMedia('print').matches) return false
+      if (browser.matchMedia && browser.matchMedia('print').matches) return false
       if (Archify.motionGovernor && Archify.motionGovernor.capable) return !Archify.motionGovernor.isPaused()
       return true
     }
@@ -3557,7 +3549,7 @@ const mountArchifyRuntime = (scope) => {
         })
         return true
       }
-      if (window.matchMedia && window.matchMedia('print').matches) return false
+      if (browser.matchMedia && browser.matchMedia('print').matches) return false
       const embed = document.documentElement.getAttribute('data-embed') === 'true'
       const explicitEmbedPlayback = document.documentElement.getAttribute('data-share-playback') === 'true'
       if (embed && !explicitEmbedPlayback && options.linked !== true) return false
@@ -4263,7 +4255,7 @@ const mountArchifyRuntime = (scope) => {
         showAll({ restore: true, updateUrl: false })
       }
     }
-    window.addEventListener('hashchange', syncViewFromHash)
+    browser.addEventListener('hashchange', syncViewFromHash)
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) {
         clearChapterPreview({ clearIntents: true })
@@ -4272,8 +4264,8 @@ const mountArchifyRuntime = (scope) => {
         settleHandoff('hidden')
       } else if (!document.hidden) maybeStartSharePlayback()
     })
-    if (window.matchMedia) {
-      const guidedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (browser.matchMedia) {
+      const guidedMotionQuery = browser.matchMedia('(prefers-reduced-motion: reduce)')
       const onGuidedMotionChange = function () {
         if (guidedMotionQuery.matches) {
           if (playing) pausePlayback()
@@ -4311,7 +4303,7 @@ const mountArchifyRuntime = (scope) => {
       })
       storyMotionObserver.observe(document.documentElement, { attributeFilter: ['data-motion'], attributes: true })
     }
-    window.addEventListener('beforeprint', function () {
+    browser.addEventListener('beforeprint', function () {
       clearChapterPreview({ clearIntents: true })
       if (playing) pausePlayback()
       else clearStoryPulse()
@@ -4457,7 +4449,7 @@ const mountArchifyRuntime = (scope) => {
     const SAFE_GAP = 10
     function visible(element) {
       if (!element || element.hidden) return false
-      const style = window.getComputedStyle(element)
+      const style = browser.getComputedStyle(element)
       return style.display !== 'none' && style.visibility !== 'hidden'
     }
     function usable(rect) {
@@ -4473,7 +4465,7 @@ const mountArchifyRuntime = (scope) => {
       const rect = svg.getBoundingClientRect()
       let transform = ''
       try {
-        transform = window.getComputedStyle(svg).transform || ''
+        transform = browser.getComputedStyle(svg).transform || ''
       } catch (_) {
         reportArchifyFailure(_)
       }
@@ -4520,9 +4512,9 @@ const mountArchifyRuntime = (scope) => {
         container &&
         svg &&
         nav &&
-        window.innerWidth > 720 &&
+        browser.innerWidth > 720 &&
         html.getAttribute('data-embed') !== 'true' &&
-        (!window.matchMedia || !window.matchMedia('print').matches) &&
+        (!browser.matchMedia || !browser.matchMedia('print').matches) &&
         visible(nav),
       )
     }
@@ -4697,10 +4689,10 @@ const mountArchifyRuntime = (scope) => {
         timeoutMessage: 'Viewer chrome layout did not reach stable dimensions.',
       })
     }
-    window.addEventListener('resize', reprobe, { passive: true })
-    window.addEventListener('load', schedule, { once: true })
-    window.addEventListener('beforeprint', schedule)
-    window.addEventListener('afterprint', reprobe)
+    browser.addEventListener('resize', reprobe, { passive: true })
+    browser.addEventListener('load', schedule, { once: true })
+    browser.addEventListener('beforeprint', schedule)
+    browser.addEventListener('afterprint', reprobe)
     if (document.fonts && document.fonts.ready)
       document.fonts.ready.then(reprobe).catch(function (error) {
         reportArchifyFailure(error)
@@ -4765,7 +4757,7 @@ const mountArchifyRuntime = (scope) => {
       state.y = Math.min(0, Math.max(height - height * state.scale, state.y))
     }
     function reducedMotion() {
-      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      return browser.matchMedia && browser.matchMedia('(prefers-reduced-motion: reduce)').matches
     }
     function contentMetrics() {
       if (!viewBox || viewBox.width <= 0 || viewBox.height <= 0) return null
@@ -4787,7 +4779,7 @@ const mountArchifyRuntime = (scope) => {
       let y
       let width
       let height
-      if (window.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')) {
+      if (browser.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')) {
         x = viewBox.x + container.scrollLeft / metrics.scale
         y = viewBox.y
         width = Math.min(viewBox.width, Math.max(1, container.clientWidth / metrics.scale))
@@ -5018,7 +5010,7 @@ const mountArchifyRuntime = (scope) => {
       const metrics = contentMetrics()
       if (!metrics || !Number.isFinite(logicalX) || !Number.isFinite(logicalY)) return false
       interruptCamera()
-      if (window.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')) {
+      if (browser.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')) {
         state.scale = 1
         state.x = 0
         state.y = 0
@@ -5129,7 +5121,7 @@ const mountArchifyRuntime = (scope) => {
       let bottom = svgHeight - Math.max(padding, 72)
       const containerRect = container.getBoundingClientRect()
       const visibleTop = Math.max(0, -containerRect.top)
-      const visibleBottom = Math.min(svgHeight, window.innerHeight - containerRect.top)
+      const visibleBottom = Math.min(svgHeight, browser.innerHeight - containerRect.top)
       if (visibleBottom - visibleTop >= 240) {
         top = Math.max(top, visibleTop + padding)
         bottom = Math.min(bottom, visibleBottom - Math.max(padding, 72))
@@ -5208,7 +5200,7 @@ const mountArchifyRuntime = (scope) => {
     }
     function reveal(ids, options) {
       options = options || {}
-      if (window.innerWidth > 720) return frameDesktop(ids, options)
+      if (browser.innerWidth > 720) return frameDesktop(ids, options)
       stopCameraMotion('replaced', false)
       state.scale = 1
       state.x = 0
@@ -5277,7 +5269,7 @@ const mountArchifyRuntime = (scope) => {
     function onScroll() {
       pinControls()
       if (Archify.radar && typeof Archify.radar.sync === 'function') Archify.radar.sync()
-      if (window.innerWidth <= 720 && container.hasAttribute('data-wide-diagram') && Date.now() > autoScrollUntil) {
+      if (browser.innerWidth <= 720 && container.hasAttribute('data-wide-diagram') && Date.now() > autoScrollUntil) {
         interruptCamera()
       }
     }
@@ -5337,7 +5329,7 @@ const mountArchifyRuntime = (scope) => {
     container.addEventListener('pointerup', onPointerEnd)
     container.addEventListener('pointercancel', onPointerEnd)
     container.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', function () {
+    browser.addEventListener('resize', function () {
       if (resizeFrame) cancelAnimationFrame(resizeFrame)
       resizeFrame = requestAnimationFrame(function () {
         resizeFrame = 0
@@ -5345,7 +5337,7 @@ const mountArchifyRuntime = (scope) => {
         else apply()
       })
     })
-    window.addEventListener('hashchange', function () {
+    browser.addEventListener('hashchange', function () {
       requestAnimationFrame(syncSemantic)
     })
     apply()
@@ -5455,8 +5447,8 @@ const mountArchifyRuntime = (scope) => {
         rect.height <= 0 ||
         rect.right <= 0 ||
         rect.bottom <= 0 ||
-        rect.left >= window.innerWidth ||
-        rect.top >= window.innerHeight
+        rect.left >= browser.innerWidth ||
+        rect.top >= browser.innerHeight
       )
         return null
       return {
@@ -5502,8 +5494,8 @@ const mountArchifyRuntime = (scope) => {
       const controlRect = visibleRect(navigation)
       const left = Math.max(placementGap, containerRect.left + placementGap)
       const top = Math.max(placementGap, containerRect.top + placementGap)
-      const right = Math.min(window.innerWidth - placementGap, containerRect.right - placementGap)
-      let bottom = Math.min(window.innerHeight - placementGap, containerRect.bottom - placementGap)
+      const right = Math.min(browser.innerWidth - placementGap, containerRect.right - placementGap)
+      let bottom = Math.min(browser.innerHeight - placementGap, containerRect.bottom - placementGap)
       if (controlRect) bottom = Math.min(bottom, controlRect.top - placementGap)
       const lens = document.getElementById('focus-chip')
       const lensRect = visibleRect(lens)
@@ -5513,7 +5505,8 @@ const mountArchifyRuntime = (scope) => {
       return {
         bounds: { bottom, left, right, top },
         hardBlockers: [lensRect, controlRect, legendRect].filter(Boolean),
-        preferredSide: !activeRect || activeRect.left + activeRect.width / 2 > window.innerWidth / 2 ? 'left' : 'right',
+        preferredSide:
+          !activeRect || activeRect.left + activeRect.width / 2 > browser.innerWidth / 2 ? 'left' : 'right',
         softBlockers: [activeRect].filter(Boolean),
       }
     }
@@ -5617,7 +5610,7 @@ const mountArchifyRuntime = (scope) => {
       return valid.length ? valid[0] : null
     }
     function applyPlacement(position, remember) {
-      const useLeft = position.left + panel.offsetWidth / 2 <= window.innerWidth / 2
+      const useLeft = position.left + panel.offsetWidth / 2 <= browser.innerWidth / 2
       panel.setAttribute('data-docked', 'true')
       panel.setAttribute('data-dock-side', useLeft ? 'left' : 'right')
       if (useLeft) {
@@ -5626,7 +5619,7 @@ const mountArchifyRuntime = (scope) => {
       } else {
         panel.style.setProperty(
           '--archify-radar-right',
-          Math.round(window.innerWidth - position.left - panel.offsetWidth) + 'px',
+          Math.round(browser.innerWidth - position.left - panel.offsetWidth) + 'px',
         )
         panel.style.removeProperty('--archify-radar-left')
       }
@@ -5687,7 +5680,7 @@ const mountArchifyRuntime = (scope) => {
       return true
     }
     function clearSpaceRetry() {
-      if (spaceRetryTimer) window.clearTimeout(spaceRetryTimer)
+      if (spaceRetryTimer) browser.clearTimeout(spaceRetryTimer)
       spaceRetryTimer = 0
     }
     function yieldPassport() {
@@ -5718,7 +5711,7 @@ const mountArchifyRuntime = (scope) => {
     function scheduleSpaceRetry() {
       if (!requestedOpen || spaceRetryTimer || spaceRetryCount >= 4) return
       spaceRetryCount += 1
-      spaceRetryTimer = window.setTimeout(function () {
+      spaceRetryTimer = browser.setTimeout(function () {
         spaceRetryTimer = 0
         attemptRequestedOpen()
       }, 60)
@@ -5786,7 +5779,7 @@ const mountArchifyRuntime = (scope) => {
       viewport.setAttribute('width', String(visible.width))
       viewport.setAttribute('height', String(visible.height))
       const full = visible.width >= viewBox.width * 0.98 && visible.height >= viewBox.height * 0.98
-      const mobileWide = window.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')
+      const mobileWide = browser.innerWidth <= 720 && container.hasAttribute('data-wide-diagram')
       const viewportCopy = full
         ? viewerText('viewer.radar.viewport.full')
         : mobileWide
@@ -5847,18 +5840,18 @@ const mountArchifyRuntime = (scope) => {
       return setOpen(false, options)
     }
     function bringNodeIntoWindow(node) {
-      const delay = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 540
-      window.setTimeout(function () {
+      const delay = browser.matchMedia && browser.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 540
+      browser.setTimeout(function () {
         const rect = node.getBoundingClientRect()
         const safeTop = 64
-        const safeBottom = window.innerHeight - 64
+        const safeBottom = browser.innerHeight - 64
         if (rect.top >= safeTop && rect.bottom <= safeBottom) return
-        const top = Math.max(0, window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2)
+        const top = Math.max(0, browser.scrollY + rect.top + rect.height / 2 - browser.innerHeight / 2)
         try {
-          window.scrollTo({ behavior: delay ? 'smooth' : 'auto', top })
+          browser.scrollTo({ behavior: delay ? 'smooth' : 'auto', top })
         } catch (_) {
           reportArchifyFailure(_)
-          window.scrollTo(0, top)
+          browser.scrollTo(0, top)
         }
       }, delay)
     }
@@ -6079,8 +6072,8 @@ const mountArchifyRuntime = (scope) => {
       spaceRetryCount = 0
       sync()
     }
-    window.addEventListener('resize', reflow)
-    window.addEventListener('scroll', reflow, { passive: true })
+    browser.addEventListener('resize', reflow)
+    browser.addEventListener('scroll', reflow, { passive: true })
     if (typeof ResizeObserver === 'function') {
       const radarResizeObserver = new ResizeObserver(function (entries) {
         if (!requestedOpen) return
@@ -6126,7 +6119,7 @@ const mountArchifyRuntime = (scope) => {
     }
     function updateUrl(next) {
       try {
-        const url = new URL(window.location.href)
+        const url = new URL(browser.location.href)
         if (next) url.searchParams.set('present', '1')
         else url.searchParams.delete('present')
         history.replaceState(null, '', url.pathname + url.search + url.hash)
@@ -6150,10 +6143,10 @@ const mountArchifyRuntime = (scope) => {
       if (next) {
         if (Archify.semanticLens && typeof Archify.semanticLens.clearPreview === 'function')
           Archify.semanticLens.clearPreview()
-        previousScrollY = window.scrollY || 0
+        previousScrollY = browser.scrollY || 0
         html.setAttribute('data-present', 'true')
         try {
-          window.scrollTo(0, 0)
+          browser.scrollTo(0, 0)
         } catch (_) {
           reportArchifyFailure(_)
         }
@@ -6171,7 +6164,7 @@ const mountArchifyRuntime = (scope) => {
         }
         if (!next && previousScrollY) {
           try {
-            window.scrollTo(0, previousScrollY)
+            browser.scrollTo(0, previousScrollY)
           } catch (_) {
             reportArchifyFailure(_)
           }
@@ -6659,7 +6652,7 @@ const mountArchifyRuntime = (scope) => {
         if (options.preserveElapsed === true && journeyStartedAt) {
           journeyElapsedMs = Math.min(JOURNEY_DWELL_MS, journeyElapsedMs + Math.max(0, Date.now() - journeyStartedAt))
         }
-        window.clearTimeout(journeyTimer)
+        browser.clearTimeout(journeyTimer)
       }
       journeyTimer = null
       journeyStartedAt = 0
@@ -7041,7 +7034,7 @@ const mountArchifyRuntime = (scope) => {
         },
         { once: true },
       )
-      window.setTimeout(function () {
+      browser.setTimeout(function () {
         if (overlay.isConnected) removeJourneyPulse()
       }, 860)
       return true
@@ -7159,7 +7152,7 @@ const mountArchifyRuntime = (scope) => {
       const generation = ++journeyGeneration
       const remaining = Math.max(0, JOURNEY_DWELL_MS - journeyElapsedMs)
       journeyStartedAt = Date.now()
-      journeyTimer = window.setTimeout(function () {
+      journeyTimer = browser.setTimeout(function () {
         if (generation !== journeyGeneration || !journeyPlaying) return
         journeyTimer = null
         journeyStartedAt = 0
@@ -7255,8 +7248,8 @@ const mountArchifyRuntime = (scope) => {
     }
     function requestDocking() {
       requestAnimationFrame(updateDocking)
-      window.setTimeout(updateDocking, 120)
-      window.setTimeout(updateDocking, 560)
+      browser.setTimeout(updateDocking, 120)
+      browser.setTimeout(updateDocking, 560)
     }
     function chooseStart(id) {
       const byId = nodesById()
@@ -7496,8 +7489,8 @@ const mountArchifyRuntime = (scope) => {
       const value =
         location.href.replace(/#.*$/, '') + '#route=' + encodeURIComponent(startId) + '~' + encodeURIComponent(endId)
       const copy =
-        navigator.clipboard && typeof navigator.clipboard.writeText === 'function'
-          ? navigator.clipboard
+        browserNavigator.clipboard && typeof browserNavigator.clipboard.writeText === 'function'
+          ? browserNavigator.clipboard
               .writeText(value)
               .then(function () {
                 return true
@@ -7513,7 +7506,7 @@ const mountArchifyRuntime = (scope) => {
           'aria-label',
           viewerText(copied ? 'viewer.route.copy.success' : 'viewer.route.copy.failed'),
         )
-        window.setTimeout(function () {
+        browser.setTimeout(function () {
           copyBtn.textContent = viewerText('viewer.route.copy')
           copyBtn.setAttribute('aria-label', viewerText('viewer.route.copy.aria'))
         }, 1600)
@@ -7612,12 +7605,12 @@ const mountArchifyRuntime = (scope) => {
     svg.addEventListener('click', interceptSelection, true)
     svg.addEventListener('keydown', interceptSelection, true)
     container.addEventListener('scroll', updateDocking, { passive: true })
-    window.addEventListener('resize', requestDocking)
-    window.addEventListener('beforeprint', function () {
+    browser.addEventListener('resize', requestDocking)
+    browser.addEventListener('beforeprint', function () {
       if (journeyPlaying) pauseJourney({ preserveElapsed: true, reason: 'print' })
       else removeJourneyPulse()
     })
-    window.addEventListener('hashchange', function () {
+    browser.addEventListener('hashchange', function () {
       requestAnimationFrame(syncFromHash)
     })
     syncFromHash()
@@ -7677,7 +7670,7 @@ const mountArchifyRuntime = (scope) => {
     let lensOpener = trigger
     let selectedKinds = []
     const namespace = 'http://www.w3.org/2000/svg'
-    const finePointerQuery = window.matchMedia ? window.matchMedia('(hover: hover) and (pointer: fine)') : null
+    const finePointerQuery = browser.matchMedia ? browser.matchMedia('(hover: hover) and (pointer: fine)') : null
     const MAX_LENS_FLOW_EDGES = 24
     function nodesById() {
       const byId = {}
@@ -8025,7 +8018,7 @@ const mountArchifyRuntime = (scope) => {
     }
     function dockPanel(byId) {
       panel.removeAttribute('data-dock-side')
-      if (panel.hidden || window.innerWidth <= 720) return 'right'
+      if (panel.hidden || browser.innerWidth <= 720) return 'right'
       const panelRect = panel.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
       if (!panelRect.width || !panelRect.height) return 'right'
@@ -8060,7 +8053,7 @@ const mountArchifyRuntime = (scope) => {
       const nav = container.querySelector('.diagram-nav')
       const protectedRects = [legend, nav]
         .filter(function (element) {
-          return element && !element.hidden && window.getComputedStyle(element).display !== 'none'
+          return element && !element.hidden && browser.getComputedStyle(element).display !== 'none'
         })
         .map(function (element) {
           return element.getBoundingClientRect()
@@ -8268,8 +8261,8 @@ const mountArchifyRuntime = (scope) => {
       if (!selectedKinds.length) return Promise.resolve(false)
       const value = location.href.replace(/#.*$/, '') + '#lens=' + selectedKinds.map(encodeURIComponent).join('~')
       const copy =
-        navigator.clipboard && typeof navigator.clipboard.writeText === 'function'
-          ? navigator.clipboard
+        browserNavigator.clipboard && typeof browserNavigator.clipboard.writeText === 'function'
+          ? browserNavigator.clipboard
               .writeText(value)
               .then(function () {
                 return true
@@ -8281,7 +8274,7 @@ const mountArchifyRuntime = (scope) => {
           : Promise.resolve(fallbackCopy(value))
       return copy.then(function (copied) {
         copyBtn.textContent = viewerText(copied ? 'viewer.common.copied' : 'viewer.common.copyFailed')
-        window.setTimeout(function () {
+        browser.setTimeout(function () {
           copyBtn.textContent = viewerText('viewer.common.copyLink')
         }, 1600)
         return copied
@@ -8410,8 +8403,8 @@ const mountArchifyRuntime = (scope) => {
         })
       if (!panel.hidden && !clickedInside && !clickedLauncher) close({ restoreFocus: false })
     })
-    window.addEventListener('hashchange', syncFromHash)
-    window.addEventListener('resize', function () {
+    browser.addEventListener('hashchange', syncFromHash)
+    browser.addEventListener('resize', function () {
       if (!panel.hidden && selectedKinds.length) dockPanel(nodesById())
       layoutLegendBridge()
     })

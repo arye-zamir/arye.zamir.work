@@ -1,25 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { contentForLocale } from '../../internal/content'
 import { DIAGRAM } from '../../internal/diagrams'
-import { I18N_SCOPE, type MessageKey, resolveLocale } from '../../internal/i18n'
+import { I18N_SCOPE, type MessageKey } from '../../internal/i18n'
+import alektionsCover from '../../static/img/1787427367563.jpeg'
 import { APP_REGION } from '../accessibility'
-import { FEATURED_PROJECT } from '../content/projects'
 
 const TRANSLATION_KEY = {
-  diagramLabel: 'diagram.label',
+  coverAlt: 'diagram.alektions.coverAlt',
   diagramOpen: 'diagram.open',
   eyebrow: 'portfolio.eyebrow',
-  indexLabel: 'portfolio.indexLabel',
   introduction: 'portfolio.introduction',
-  statusLabel: 'portfolio.statusLabel',
   title: 'portfolio.title',
 } as const satisfies Record<string, MessageKey>
 
-const { locale, t } = useI18n({ useScope: I18N_SCOPE.global })
-const project = computed(() => contentForLocale(FEATURED_PROJECT, resolveLocale(locale.value)))
+const COVER = { height: 1152, width: 2048 } as const
+
+const { t } = useI18n({ useScope: I18N_SCOPE.global })
 </script>
 
 <template>
@@ -30,28 +27,33 @@ const project = computed(() => contentForLocale(FEATURED_PROJECT, resolveLocale(
       <p class="see-introduction">{{ t(TRANSLATION_KEY.introduction) }}</p>
     </header>
 
-    <section class="portfolio-stage">
-      <div class="portfolio-visual" aria-hidden="true">
-        <span class="portfolio-plane portfolio-plane-primary" />
-        <span class="portfolio-plane portfolio-plane-secondary" />
-        <span class="portfolio-axis" />
-      </div>
-
-      <div class="portfolio-copy">
-        <div class="portfolio-meta">
-          <span>{{ t(TRANSLATION_KEY.indexLabel) }}</span>
-          <span>{{ t(TRANSLATION_KEY.statusLabel) }}</span>
-        </div>
-        <h2>{{ project.title }}</h2>
-        <p>{{ project.body }}</p>
-      </div>
-    </section>
-
     <section class="portfolio-diagram">
-      <p class="eyebrow">{{ t(TRANSLATION_KEY.diagramLabel) }}</p>
-      <h2>{{ t(DIAGRAM.alektions.titleKey) }}</h2>
+      <h2>
+        <RouterLink :to="DIAGRAM.alektions.path">{{ t(DIAGRAM.alektions.titleKey) }}</RouterLink>
+      </h2>
+      <img
+        class="portfolio-cover"
+        :src="alektionsCover"
+        :alt="t(TRANSLATION_KEY.coverAlt)"
+        :width="COVER.width"
+        :height="COVER.height"
+      />
       <p>{{ t(DIAGRAM.alektions.descriptionKey) }}</p>
       <RouterLink class="text-link" :to="DIAGRAM.alektions.path">{{ t(TRANSLATION_KEY.diagramOpen) }}</RouterLink>
+    </section>
+    <section class="portfolio-diagram">
+      <h2>
+        <RouterLink :to="DIAGRAM.amiit.path">{{ t(DIAGRAM.amiit.titleKey) }}</RouterLink>
+      </h2>
+      <p>{{ t(DIAGRAM.amiit.descriptionKey) }}</p>
+      <RouterLink class="text-link" :to="DIAGRAM.amiit.path">{{ t(TRANSLATION_KEY.diagramOpen) }}</RouterLink>
+    </section>
+    <section class="portfolio-diagram">
+      <h2>
+        <RouterLink :to="DIAGRAM.commodity.path">{{ t(DIAGRAM.commodity.titleKey) }}</RouterLink>
+      </h2>
+      <p>{{ t(DIAGRAM.commodity.descriptionKey) }}</p>
+      <RouterLink class="text-link" :to="DIAGRAM.commodity.path">{{ t(TRANSLATION_KEY.diagramOpen) }}</RouterLink>
     </section>
   </main>
 </template>

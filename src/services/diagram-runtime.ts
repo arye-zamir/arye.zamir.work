@@ -1,18 +1,20 @@
+import { requireBrowser } from './browser'
 import { bindBrowserMember, BROWSER_MEMBER } from './browser-member'
 
 export interface ArchifyRuntimeScope {
+  browser: Window
+  browserNavigator: Navigator
   cancelAnimationFrame: Window['cancelAnimationFrame']
   clearTimeout: Window['clearTimeout']
   document: Document
   history: History
   location: Location
   MutationObserver: typeof MutationObserver | undefined
-  navigator: Navigator
+  onDispose: (callback: () => void) => void
   requestAnimationFrame: Window['requestAnimationFrame']
   ResizeObserver: typeof ResizeObserver | undefined
   setTimeout: ScopedTimeout
   URL: typeof URL
-  window: Window
 }
 export interface ArchifyRuntimeSession {
   dispose: Cleanup
@@ -34,7 +36,7 @@ export const createArchifyRuntimeSession = (root: HTMLElement, body: HTMLElement
   const animationFrames = new Set<number>()
   const timeouts = new Set<number>()
   const observers = new Set<{ disconnect: () => void }>()
-  const browserWindow = window
+  const browserWindow = requireBrowser()
   const browserDocument = document
 
   const trackListenerOn =
@@ -180,18 +182,19 @@ export const createArchifyRuntimeSession = (root: HTMLElement, body: HTMLElement
   return {
     dispose,
     scope: {
+      browser: scopedWindow,
+      browserNavigator: browserWindow.navigator,
       cancelAnimationFrame: scopedCancelAnimationFrame,
       clearTimeout: scopedClearTimeout,
       document: scopedDocument,
       history: browserWindow.history,
       location: browserWindow.location,
       MutationObserver: ScopedMutationObserver,
-      navigator: browserWindow.navigator,
+      onDispose: (callback) => void cleanup.add(callback),
       requestAnimationFrame: scopedRequestAnimationFrame,
       ResizeObserver: ScopedResizeObserver,
       setTimeout: scopedSetTimeout,
       URL: browserWindow.URL,
-      window: scopedWindow,
     },
   }
 }
