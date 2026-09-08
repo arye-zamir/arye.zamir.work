@@ -47,7 +47,7 @@ const ENGLISH_MESSAGES = {
     open: 'Explore the architecture',
   },
   home: {
-    eyebrow: 'Designer · Developer',
+    eyebrow: 'Designer · Builder',
     introduction:
       'I design and build thoughtful software, with an eye for the systems underneath and the people using them.',
     readLabel: 'Read the journal',
