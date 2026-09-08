@@ -283,12 +283,16 @@ h1[tabindex='-1']:focus {
   color: var(--muted);
 }
 
-.journal-empty {
+.journal-list {
+  border-top: 1px solid var(--line);
+}
+
+.journal-entry {
   display: grid;
   grid-template-columns: 88px 1fr;
   gap: 28px;
-  padding-block: 36px;
-  border-block: 1px solid var(--line);
+  padding-block: clamp(36px, 6vw, 64px);
+  border-bottom: 1px solid var(--line);
 }
 
 .journal-mark {
@@ -297,13 +301,51 @@ h1[tabindex='-1']:focus {
   font-size: 2rem;
 }
 
-.journal-empty h2 {
-  margin-bottom: 6px;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
+.journal-entry h2 {
+  max-width: 760px;
+  margin-bottom: 20px;
+  font-size: clamp(1.8rem, 4vw, 3rem);
   line-height: 1.15;
 }
 
-.journal-empty p,
+.journal-date {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.journal-details {
+  max-width: 720px;
+}
+
+.journal-details summary {
+  width: fit-content;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.journal-details summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+.journal-body {
+  padding-block-start: 28px;
+}
+
+.journal-body p {
+  margin-bottom: 1.4em;
+}
+
+.journal-source {
+  display: inline-block;
+  margin-top: 8px;
+}
+
 .site-footer {
   color: var(--muted);
 }
@@ -373,7 +415,7 @@ h1[tabindex='-1']:focus {
     margin-bottom: 0;
   }
 
-  .journal-empty {
+  .journal-entry {
     grid-template-columns: 52px 1fr;
     gap: 16px;
   }

@@ -98,12 +98,12 @@ const ENGLISH_MESSAGES = {
   },
   preferences: { dark: 'Dark', light: 'Light', system: 'System', theme: 'Color theme' },
   read: {
-    emptyBody: 'New writing will appear here soon.',
-    emptyTitle: 'The first essay is in progress.',
-    entryNumber: '01',
     eyebrow: 'Notes on making software',
+    fullPost: 'Full post',
     introduction:
       'Field notes about engineering decisions, product craft, and the work of turning an idea into something dependable.',
+    originalLink: 'View the original on LinkedIn',
+    postsLabel: 'Journal posts',
     title: 'Read',
   },
 } as const
@@ -195,11 +195,11 @@ const HEBREW_MESSAGES = {
   },
   preferences: { dark: 'כהה', light: 'בהיר', system: 'מערכת', theme: 'ערכת צבעים' },
   read: {
-    emptyBody: 'כתיבה חדשה תופיע כאן בקרוב.',
-    emptyTitle: 'המאמר הראשון בתהליך כתיבה.',
-    entryNumber: '01',
     eyebrow: 'רשימות על יצירת תוכנה',
+    fullPost: 'הפוסט המלא',
     introduction: 'רשימות מהשטח על החלטות הנדסיות, מלאכת המוצר והדרך להפוך רעיון למשהו שאפשר לסמוך עליו.',
+    originalLink: 'לפוסט המקורי בלינקדאין',
+    postsLabel: 'פוסטים',
     title: 'כתיבה',
   },
 } satisfies MessageShape<typeof ENGLISH_MESSAGES>
