@@ -1,6 +1,9 @@
 name: Factory release
 
 on:
+  pull_request:
+    types:
+      - closed
   pull_request_review:
     types:
       - submitted
@@ -13,10 +16,11 @@ permissions:
   contents: read
 
 jobs:
-  release:
-    name: Merge and tag
+  merge:
+    name: Merge on approval
     if: >-
-      github.event.review.state == 'approved'
+      github.event_name == 'pull_request_review'
+      && github.event.review.state == 'approved'
       && github.event.review.user.login == github.repository_owner
       && startsWith(github.event.pull_request.head.ref, 'agent/')
       && github.event.pull_request.head.repo.full_name == github.repository
@@ -26,16 +30,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout with the release token (v7.0.1)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.FACTORY_TOKEN }}
       - name: Merge the approved pull request
         env:
           GH_TOKEN: ${{ github.token }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
-        run: gh pr merge "$PULL_REQUEST" --squash --delete-branch
+          REPOSITORY: ${{ github.repository }}
+        run: gh pr merge "$PULL_REQUEST" --repo "$REPOSITORY" --squash --delete-branch
+
+  release:
+    name: Cut the release
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.merged == true
+      && startsWith(github.event.pull_request.head.ref, 'agent/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout with the release token (v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          ref: main
+          token: ${{ secrets.FACTORY_TOKEN }}
       - name: Resolve the next version
         id: version
         env:
@@ -59,11 +75,8 @@ jobs:
         env:
           TAG: ${{ steps.version.outputs.tag }}
         run: |
-          git fetch origin main --quiet
-          git checkout -q main
-          git reset --hard -q origin/main
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git tag -a "$TAG" -m "$TAG"
           git push origin "$TAG"
-          echo "pushed $TAG with the release token; the deploy workflow takes it from here"
+          echo "pushed $TAG; the deploy workflow takes it from here"

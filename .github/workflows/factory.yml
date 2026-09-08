@@ -58,11 +58,15 @@ jobs:
             echo "refused: FACTORY_TOKEN is not set"
             exit 1
           fi
-          if ! gh api "repos/$REPOSITORY" --jq '.permissions.push' | grep -qx true; then
-            echo "refused: FACTORY_TOKEN cannot push to $REPOSITORY; it needs Contents: read and write"
+          probe="refs/tags/factory-token-probe-$GITHUB_RUN_ID"
+          sha=$(gh api "repos/$REPOSITORY/git/refs/heads/main" --jq '.object.sha')
+          if ! gh api -X POST "repos/$REPOSITORY/git/refs" -f ref="$probe" -f sha="$sha" >/dev/null 2>&1; then
+            echo "refused: FACTORY_TOKEN cannot write refs to $REPOSITORY"
+            echo "grant it Contents: read and write, then re-run"
             exit 1
           fi
-          echo "FACTORY_TOKEN can push; the release tag will trigger the deploy"
+          gh api -X DELETE "repos/$REPOSITORY/git/$probe" >/dev/null
+          echo "FACTORY_TOKEN can write refs; the release tag will trigger the deploy"
 
   agent:
     name: Agent
@@ -167,7 +171,8 @@ jobs:
           } > "$RUNNER_TEMP/task/pr.md"
           gh pr create --base main --head "$branch" \
             --title "fix: issue #$ISSUE_NUMBER" \
-            --body-file "$RUNNER_TEMP/task/pr.md"
+            --body-file "$RUNNER_TEMP/task/pr.md" \
+            --reviewer "$GITHUB_REPOSITORY_OWNER"
           gh issue edit "$ISSUE_NUMBER" --add-label 'factory:pr-open' --remove-label 'factory:ready'
       - name: Report a refusal on the issue
         if: failure()
