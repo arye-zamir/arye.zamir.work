@@ -1,0 +1,66 @@
+name: Factory release
+
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+concurrency:
+  cancel-in-progress: false
+  group: factory-release-${{ github.event.pull_request.number }}
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Merge and tag
+    if: >-
+      github.event.review.state == 'approved'
+      && github.event.review.user.login == github.repository_owner
+      && startsWith(github.event.pull_request.head.ref, 'agent/')
+      && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout (v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FACTORY_TOKEN }}
+      - name: Merge the approved pull request
+        env:
+          GH_TOKEN: ${{ secrets.FACTORY_TOKEN }}
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
+        run: gh pr merge "$PULL_REQUEST" --squash --delete-branch
+      - name: Resolve the next version
+        id: version
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          git fetch --tags --force --quiet
+          latest=$(git tag --list 'v*.*.*' --sort=-v:refname | head -1)
+          latest=${latest:-v0.0.0}
+          rest=${latest#v}
+          major=${rest%%.*}
+          rest=${rest#*.}
+          minor=${rest%%.*}
+          patch=${rest#*.}
+          case "$TITLE" in
+            feat*) minor=$((minor + 1)); patch=0 ;;
+            *) patch=$((patch + 1)) ;;
+          esac
+          echo "tag=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          echo "$latest -> v$major.$minor.$patch"
+      - name: Tag the release
+        env:
+          GH_TOKEN: ${{ secrets.FACTORY_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git checkout main
+          git pull --ff-only origin main
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
+          echo "pushed $TAG; the deploy workflow takes it from here"
