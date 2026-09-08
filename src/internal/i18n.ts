@@ -47,7 +47,7 @@ const ENGLISH_MESSAGES = {
     open: 'Explore the architecture',
   },
   home: {
-    eyebrow: 'Frontend Architect · Designer · Builder',
+    eyebrow: 'Frontend Developer · Designer · Builder',
     introduction:
       'I design and build thoughtful software, with an eye for the systems underneath and the people using them.',
     readLabel: 'Read the journal',
@@ -56,8 +56,8 @@ const ENGLISH_MESSAGES = {
   },
   metadata: {
     home: {
-      description: 'Arye Zamir is a frontend architect designing resilient, accessible digital products and systems.',
-      title: 'Frontend Architect',
+      description: 'Arye Zamir is a frontend developer designing resilient, accessible digital products and systems.',
+      title: 'Frontend Developer',
     },
     notFound: {
       description: 'The requested page could not be found.',
@@ -65,7 +65,7 @@ const ENGLISH_MESSAGES = {
     },
     read: {
       description:
-        'Field notes by frontend architect Arye Zamir on engineering decisions, product craft, and dependable systems.',
+        'Field notes by frontend developer Arye Zamir on engineering decisions, product craft, and dependable systems.',
       title: 'Writing',
     },
     see: {
@@ -146,7 +146,7 @@ const HEBREW_MESSAGES = {
     open: 'לסיור בארכיטקטורה',
   },
   home: {
-    eyebrow: 'ארכיטקט פרונטאנד · מעצב · בונה',
+    eyebrow: 'מפתח פרונטאנד · מעצב · בונה',
     introduction: 'אני מעצב ובונה תוכנה מתוך מחשבה, עם תשומת לב למערכות שמתחת לפני השטח ולאנשים שמשתמשים בהן.',
     readLabel: 'לקריאת היומן',
     seeLabel: 'לעבודות שלי',
@@ -154,15 +154,15 @@ const HEBREW_MESSAGES = {
   },
   metadata: {
     home: {
-      description: 'אריה זמיר הוא ארכיטקט פרונטאנד המתכנן מוצרים ומערכות דיגיטליות עמידים ונגישים.',
-      title: 'ארכיטקט פרונטאנד',
+      description: 'אריה זמיר הוא מפתח פרונטאנד המתכנן מוצרים ומערכות דיגיטליות עמידים ונגישים.',
+      title: 'מפתח פרונטאנד',
     },
     notFound: {
       description: 'לא ניתן למצוא את העמוד המבוקש.',
       title: 'העמוד לא נמצא',
     },
     read: {
-      description: 'רשימות מאת ארכיטקט הפרונטאנד אריה זמיר על החלטות הנדסיות, מלאכת המוצר ומערכות אמינות.',
+      description: 'רשימות מאת מפתח הפרונטאנד אריה זמיר על החלטות הנדסיות, מלאכת המוצר ומערכות אמינות.',
       title: 'כתיבה',
     },
     see: {

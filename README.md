@@ -1,6 +1,6 @@
 # arye.zamir.work
 
-Bilingual portfolio and writing platform for frontend architect Arye Zamir. The application is a Vue 3 single-page application with typed route metadata, route-level code splitting, English and Hebrew localization, automatic RTL direction, and accessible navigation lifecycle management.
+Bilingual portfolio and writing platform for frontend developer Arye Zamir. The application is a Vue 3 single-page application with typed route metadata, route-level code splitting, English and Hebrew localization, automatic RTL direction, and accessible navigation lifecycle management.
 
 ## Architecture
 
@@ -44,5 +44,5 @@ pnpm dev
 
 The application uses HTML5 history. The production host must rewrite unknown paths such as `/read` and `/see` to `index.html`; Vue Router then resolves the route or renders the localized catch-all view.
 
-`wrangler.jsonc` satisfies that contract with Cloudflare Workers static assets, and the `Deploy` workflow runs the quality gate and publishes the bundle on every push to `main`.
-See [the deployment notes](docs/deployment.md) for the required secrets, the domain move, and why S3 with CloudFront was rejected.
+`wrangler.jsonc` satisfies that contract with Cloudflare Workers static assets. Releases are cut by pushing a `v*.*.*` tag; CI gates the tag and hands its own build artifact to the deploy job, so the published bytes are the bytes that passed.
+See [the deployment notes](docs/deployment.md) for the release command, the required secrets, and why S3 with CloudFront was rejected.
