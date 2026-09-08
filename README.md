@@ -43,3 +43,6 @@ pnpm dev
 ## Deployment
 
 The application uses HTML5 history. The production host must rewrite unknown paths such as `/read` and `/see` to `index.html`; Vue Router then resolves the route or renders the localized catch-all view.
+
+`wrangler.jsonc` satisfies that contract with Cloudflare Workers static assets, and the `Deploy` workflow runs the quality gate and publishes the bundle on every push to `main`.
+See [the deployment notes](docs/deployment.md) for the required secrets, the domain move, and why S3 with CloudFront was rejected.
