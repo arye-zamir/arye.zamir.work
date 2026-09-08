@@ -18,7 +18,7 @@ const { t } = useI18n({ useScope: I18N_SCOPE.global })
 
 <template>
   <main :id="APP_REGION.mainId" class="home-view" :tabindex="APP_REGION.focusIndex">
-    <p class="eyebrow">{{ t(TRANSLATION_KEY.eyebrow) }}</p>
+    <p class="eyebrow" data-factt="home-eyebrow">{{ t(TRANSLATION_KEY.eyebrow) }}</p>
     <h1>{{ t(TRANSLATION_KEY.title) }}</h1>
     <p class="home-introduction">{{ t(TRANSLATION_KEY.introduction) }}</p>
     <nav class="home-actions">

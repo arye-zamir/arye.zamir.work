@@ -1,0 +1,49 @@
+name: Factory
+
+on:
+  issues:
+    types:
+      - labeled
+
+concurrency:
+  cancel-in-progress: false
+  group: factory-${{ github.event.issue.number }}
+
+permissions:
+  contents: read
+
+jobs:
+  eligibility:
+    name: Eligibility
+    if: >-
+      github.event.label.name == 'factory:ready'
+      && github.repository_owner == 'arye-zamir'
+      && github.event.issue.user.login == github.repository_owner
+      && github.event.issue.author_association == 'OWNER'
+      && github.actor == github.repository_owner
+      && github.triggering_actor == github.repository_owner
+      && !contains(github.event.issue.labels.*.name, 'no-agent')
+      && !contains(github.event.issue.labels.*.name, 'security')
+      && !contains(github.event.issue.labels.*.name, 'migration')
+      && !contains(github.event.issue.labels.*.name, 'production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Assert the owner authored and triggered this run
+        env:
+          AUTHOR: ${{ github.event.issue.user.login }}
+          ASSOCIATION: ${{ github.event.issue.author_association }}
+          LABELLER: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          for actual in "$AUTHOR" "$LABELLER"; do
+            if [ "$actual" != "$OWNER" ]; then
+              echo "refused: expected $OWNER, got $actual"
+              exit 1
+            fi
+          done
+          if [ "$ASSOCIATION" != "OWNER" ]; then
+            echo "refused: author_association is $ASSOCIATION"
+            exit 1
+          fi
+          echo "eligible: issue #${{ github.event.issue.number }} authored and labelled by $OWNER"
