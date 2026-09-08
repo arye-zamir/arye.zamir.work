@@ -1,6 +1,6 @@
 # arye.zamir.work
 
-Bilingual portfolio and writing platform for frontend developer Arye Zamir. The application is a Vue 3 single-page application with typed route metadata, route-level code splitting, English and Hebrew localization, automatic RTL direction, and accessible navigation lifecycle management.
+Bilingual portfolio and writing platform for Arye Zamir. The application is a Vue 3 single-page application with typed route metadata, route-level code splitting, English and Hebrew localization, automatic RTL direction, and accessible navigation lifecycle management.
 
 ## Architecture
 

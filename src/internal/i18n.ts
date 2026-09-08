@@ -47,7 +47,7 @@ const ENGLISH_MESSAGES = {
     open: 'Explore the architecture',
   },
   home: {
-    eyebrow: 'Frontend Developer · Designer · Builder',
+    eyebrow: 'Designer · Builder',
     introduction:
       'I design and build thoughtful software, with an eye for the systems underneath and the people using them.',
     readLabel: 'Read the journal',
@@ -56,8 +56,8 @@ const ENGLISH_MESSAGES = {
   },
   metadata: {
     home: {
-      description: 'Arye Zamir is a frontend developer designing resilient, accessible digital products and systems.',
-      title: 'Frontend Developer',
+      description: 'Arye Zamir is a software developer designing resilient, accessible digital products and systems.',
+      title: 'Software Developer',
     },
     notFound: {
       description: 'The requested page could not be found.',
@@ -65,11 +65,11 @@ const ENGLISH_MESSAGES = {
     },
     read: {
       description:
-        'Field notes by frontend developer Arye Zamir on engineering decisions, product craft, and dependable systems.',
+        'Field notes by software developer Arye Zamir on engineering decisions, product craft, and dependable systems.',
       title: 'Writing',
     },
     see: {
-      description: 'Selected frontend architecture, product design, and engineering work by Arye Zamir.',
+      description: 'Selected architecture, product design, and engineering work.',
       title: 'Selected Work',
     },
   },
@@ -146,7 +146,7 @@ const HEBREW_MESSAGES = {
     open: 'לסיור בארכיטקטורה',
   },
   home: {
-    eyebrow: 'מפתח פרונטאנד · מעצב · בונה',
+    eyebrow: 'מעצב · בונה',
     introduction: 'אני מעצב ובונה תוכנה מתוך מחשבה, עם תשומת לב למערכות שמתחת לפני השטח ולאנשים שמשתמשים בהן.',
     readLabel: 'לקריאת היומן',
     seeLabel: 'לעבודות שלי',
@@ -154,19 +154,19 @@ const HEBREW_MESSAGES = {
   },
   metadata: {
     home: {
-      description: 'אריה זמיר הוא מפתח פרונטאנד המתכנן מוצרים ומערכות דיגיטליות עמידים ונגישים.',
-      title: 'מפתח פרונטאנד',
+      description: 'אריה זמיר הוא מפתח תוכנה המתכנן מוצרים ומערכות דיגיטליות עמידים ונגישים.',
+      title: 'מפתח תוכנה',
     },
     notFound: {
       description: 'לא ניתן למצוא את העמוד המבוקש.',
       title: 'העמוד לא נמצא',
     },
     read: {
-      description: 'רשימות מאת מפתח הפרונטאנד אריה זמיר על החלטות הנדסיות, מלאכת המוצר ומערכות אמינות.',
+      description: 'רשימות מאת מפתח התוכנה אריה זמיר על החלטות הנדסיות, מלאכת המוצר ומערכות אמינות.',
       title: 'כתיבה',
     },
     see: {
-      description: 'עבודות נבחרות בארכיטקטורת פרונטאנד, עיצוב מוצר והנדסה מאת אריה זמיר.',
+      description: 'עבודות נבחרות בארכיטקטורה, עיצוב מוצר והנדסה.',
       title: 'עבודות נבחרות',
     },
   },
