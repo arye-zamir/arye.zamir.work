@@ -11,4 +11,5 @@ interface ImportMeta {
 
 interface ImportMetaEnv {
   readonly VITE_APP_VERSION?: string
+  readonly VITE_CF_ANALYTICS_TOKEN?: string
 }

@@ -42,3 +42,10 @@ export const storage = createStorageService({
 })
 
 export const browserHistory = (): History => requireBrowser().history
+export const injectHeadScript = (attributes: Record<string, string>): void => {
+  const target = browser()
+  if (!target) return
+  const script = target.document.createElement('script')
+  for (const [name, value] of Object.entries(attributes)) script.setAttribute(name, value)
+  target.document.head.appendChild(script)
+}

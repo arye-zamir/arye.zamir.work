@@ -49,6 +49,8 @@ jobs:
       - name: Test
         run: pnpm test
       - name: Build
+        env:
+          VITE_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
         run: pnpm build
       - name: Upload release bundle (v7.0.1)
         if: matrix.node-version == 24 && startsWith(github.ref, 'refs/tags/')
