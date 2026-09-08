@@ -22,8 +22,26 @@ git tag -a v1.0.0 -m "v1.0.0"
 git push origin v1.0.0
 ```
 
-`VITE_APP_VERSION` is resolved during the gate: the tag name on a tag build, the short commit SHA
-otherwise. The footer omits the version when no value is supplied.
+`VITE_APP_VERSION` is resolved during the gate, and only on a tag build, as `<semver>+<short sha>` —
+for example `1.1.0+93006cf`. The leading `v` is stripped from the tag because `common.versionPrefix`
+already supplies it, and the English catalog renders `v` while the Hebrew catalog renders `גרסה `. No
+build timestamp is recorded. Branch builds set no value at all and the footer omits the version.
+
+## Releasing without a terminal
+
+`ci.yml` also accepts `workflow_dispatch`, and the deploy guard reads `github.ref` rather than the event
+name, so a manual run against a tag deploys exactly as a tag push does.
+
+1. **Code** tab, branch dropdown, **New branch**, then edit the file and commit to it.
+2. Open the pull request and merge it. The gate runs; nothing publishes.
+3. **Releases**, **Draft a new release**, **Choose a tag**, type the next `v*.*.*` value, **Create new
+   tag on publish**, target `main`, **Publish release**.
+4. If the release did not start a run on its own, open **Actions**, select **CI**, **Run workflow**,
+   switch the ref dropdown to its **Tags** tab, choose the new tag, and run it.
+
+Step 4 is the deterministic path. Whether publishing a release also emits a tag `push` event is
+undocumented behavior that has changed before, so the manual run against the tag is what this repository
+relies on.
 
 ## Concurrency
 

@@ -7,6 +7,7 @@ on:
       - main
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/') }}
@@ -39,12 +40,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Resolve release identifier
-        run: |
-          if [ "$GITHUB_REF_TYPE" = tag ]; then
-            echo "VITE_APP_VERSION=$GITHUB_REF_NAME" >> "$GITHUB_ENV"
-          else
-            echo "VITE_APP_VERSION=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          fi
+        if: startsWith(github.ref, 'refs/tags/')
+        run: echo "VITE_APP_VERSION=${GITHUB_REF_NAME#v}+${GITHUB_SHA::7}" >> "$GITHUB_ENV"
       - name: Check formatting
         run: pnpm format:check
       - name: Lint
