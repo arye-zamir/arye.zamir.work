@@ -12,9 +12,6 @@ permissions:
 jobs:
   scope:
     name: Approved scope
-    if: >-
-      startsWith(github.head_ref, 'agent/')
-      && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -29,6 +26,17 @@ jobs:
       - name: Check the patch against the policy
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
           REPOSITORY: ${{ github.repository }}
-        run: node factory/check-scope.mjs "$(gh pr diff "$PULL_REQUEST" --name-only --repo "$REPOSITORY")"
+        run: |
+          case "$HEAD_REF" in
+            agent/*) ;;
+            *) echo "not a factory branch; policy does not apply"; exit 0 ;;
+          esac
+          if [ "$HEAD_REPOSITORY" != "$REPOSITORY" ]; then
+            echo "refused: factory branch from a fork"
+            exit 1
+          fi
+          node factory/check-scope.mjs "$(gh pr diff "$PULL_REQUEST" --name-only --repo "$REPOSITORY")"
