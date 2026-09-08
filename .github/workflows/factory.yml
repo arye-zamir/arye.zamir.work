@@ -137,12 +137,14 @@ jobs:
       - name: Refuse an empty or out-of-scope patch
         run: |
           git add -A
-          changed=$(git diff --cached --name-only)
-          if [ -z "$changed" ]; then
+          git diff --cached > "$RUNNER_TEMP/task/patch.diff"
+          if [ ! -s "$RUNNER_TEMP/task/patch.diff" ]; then
             echo "the agent changed nothing"
             exit 1
           fi
-          node factory/check-scope.mjs "$changed"
+          git stash --quiet --staged
+          node factory/check-scope.mjs "$RUNNER_TEMP/task/patch.diff"
+          git stash pop --quiet
       - name: Run the repository gate
         run: pnpm check
       - name: Open the pull request

@@ -39,4 +39,5 @@ jobs:
             echo "refused: factory branch from a fork"
             exit 1
           fi
-          node factory/check-scope.mjs "$(gh pr diff "$PULL_REQUEST" --name-only --repo "$REPOSITORY")"
+          gh pr diff "$PULL_REQUEST" --repo "$REPOSITORY" > "$RUNNER_TEMP/patch.diff"
+          node factory/check-scope.mjs "$RUNNER_TEMP/patch.diff"
