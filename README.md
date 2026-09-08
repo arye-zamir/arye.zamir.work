@@ -21,7 +21,7 @@ pnpm check
 
 The gate checks Prettier formatting, ESLint with zero warnings, typed unit contracts, Vue template types, and the production Vite bundle. ESLint uses type-aware `strict-type-checked` and `stylistic-type-checked` rules, Vue's all-error recommended flat preset, and Perfectionist's natural-order preset. Prettier owns formatting.
 
-CI runs those stages independently on Node 22.13 and 24. A separate networked security job audits every production vulnerability severity and high-severity development vulnerabilities; pull requests also receive dependency-diff review. Workflow actions are pinned to immutable release commits and run with read-only repository permissions.
+CI runs those stages independently on Node 22.13 and 24. A separate networked security job audits every production vulnerability severity and high-severity development vulnerabilities on every push and pull request. Workflow actions are pinned to immutable release commits and run with read-only repository permissions.
 
 ## Development
 
