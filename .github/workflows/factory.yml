@@ -156,6 +156,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git checkout -b "$branch"
+          git add -A
           git commit -q -m "fix: apply the change requested in issue #$ISSUE_NUMBER"
           git push -u origin "$branch"
           {
