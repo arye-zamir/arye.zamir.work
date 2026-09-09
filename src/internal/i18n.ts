@@ -47,7 +47,7 @@ const ENGLISH_MESSAGES = {
     open: 'Explore the architecture',
   },
   home: {
-    eyebrow: 'Designer · Builder',
+    eyebrow: 'Designer · Builder · Writer',
     introduction:
       'I design and build thoughtful software, with an eye for the systems underneath and the people using them.',
     readLabel: 'Read the journal',
@@ -146,7 +146,7 @@ const HEBREW_MESSAGES = {
     open: 'לסיור בארכיטקטורה',
   },
   home: {
-    eyebrow: 'מעצב · מפתח',
+    eyebrow: 'מעצב · מפתח · כותב',
     introduction: 'אני מעצב ובונה תוכנה מתוך מחשבה, עם תשומת לב למערכות שמתחת לפני השטח ולאנשים שמשתמשים בהן.',
     readLabel: 'לקריאת היומן',
     seeLabel: 'לעבודות שלי',
