@@ -1,7 +1,19 @@
-import { type AuthoredContent, type LocalizedContent } from './content'
-import { LOCALE } from './i18n'
+import { type Locale, LOCALE } from './i18n'
 
-export interface SocialPost extends AuthoredContent {
+export interface PostContent {
+  body: string
+  locale: Locale
+  metadata: Record<Locale, PostMetadata>
+}
+
+export interface PostMetadata {
+  description: string
+  title: string
+}
+
+export interface SocialPost {
+  content: PostContent
+  id: string
   publishedAt: string
   sourceUrl: string
 }
@@ -27,7 +39,18 @@ const POST_COPY = {
 
 https://lnkd.in/d9NQNpD4`,
     locale: LOCALE.he,
-    title: 'ממודל גנרטיבי ל-classifier פרטי',
+    metadata: {
+      [LOCALE.en]: {
+        description:
+          'A token budget that burned down in two hours taught me that a narrow decision repeated thousands of times needs a fine-tuned classifier, not a generative agent.',
+        title: 'From a generative model to a private classifier',
+      },
+      [LOCALE.he]: {
+        description:
+          'תקציב טוקנים שנשרף בשעתיים לימד אותי שהחלטה צרה שחוזרת אלפי פעמים לא צריכה סוכן גנרטיבי — היא צריכה classifier עם fine-tune.',
+        title: 'ממודל גנרטיבי ל-classifier פרטי',
+      },
+    },
   },
   mcp: {
     body: `אתמול פורסם ה-roadmap של MCP, והיה שם דבר אחד שקפץ לי לעיניים: agentic messaging! יש כבר פרוטוקולים Agent2Agent, ולאנתרופיק יש כלי הודעות בין סשנים built-in (שהיה חסר לי כל כך במעבר לקודקס שהייתי חייב לפתח אחד בעצמי).
@@ -45,7 +68,18 @@ https://lnkd.in/d9NQNpD4`,
 
 (מקורות בתגובה הראשונה)`,
     locale: LOCALE.he,
-    title: 'Agentic messaging ב-roadmap של MCP',
+    metadata: {
+      [LOCALE.en]: {
+        description:
+          'What happens when a whole workflow hides behind a single MCP call: trust boundaries, UNKNOWN outcomes, and why this is an architectural decision, not a refactor.',
+        title: 'Agentic messaging on the MCP roadmap',
+      },
+      [LOCALE.he]: {
+        description:
+          'מה קורה כש-workflow שלם נחשף כקריאת MCP אחת: גבולות אמון, מצבי UNKNOWN, ולמה זו החלטה ארכיטקטונית ולא עוד ריפקטור על הדרך.',
+        title: 'Agentic messaging ב-roadmap של MCP',
+      },
+    },
   },
   memory: {
     body: `שאלה: האם אפשר לחבר את כל קטעי ה-2 דקות של תקציר ״בפרקים הקודמים״ מעונות 1-4 של הסמויה ולהיות מוכן לעונה 5? או שחובה לצפות בכל פרק במלואו?
@@ -66,7 +100,18 @@ https://lnkd.in/d9NQNpD4`,
 
 (קישורים בתגובה הראשונה)`,
     locale: LOCALE.he,
-    title: 'באיזו רזולוציה סוכן AI צריך לזכור?',
+    metadata: {
+      [LOCALE.en]: {
+        description:
+          'A study on agentic memory finds that small, transferable skills beat task-level summaries — and that a skill’s utility can be scored before it reaches production.',
+        title: 'At what resolution should an AI agent remember?',
+      },
+      [LOCALE.he]: {
+        description:
+          'מחקר על זיכרון סוכנים מוצא ש-skills קטנים וניידים מנצחים סיכומים ברמת המשימה — ושאפשר למדוד את התועלת שלהם עוד לפני production.',
+        title: 'באיזו רזולוציה סוכן AI צריך לזכור?',
+      },
+    },
   },
   modelRelease: {
     body: `יש משהו כמעט משעשע בשם Model 2 🤖
@@ -85,32 +130,43 @@ https://lnkd.in/d9NQNpD4`,
 
 נ.ב. גם את ההקשר של Z.ai קשה לפספס: בשנים האחרונות רשויות אמריקאיות ייחסו לגורמים בחסות סין את Salt Typhoon, שבמסגרתה נפרצו רשתות של Verizon, AT&T ו-Lumen, ואת Volt Typhoon, שלפי CISA חדרה לרשתות של ארגוני תשתית קריטית בתחומי התקשורת, האנרגיה, התחבורה והמים. לכן כשחברת AI סינית עוצרת רגע לפני פרסום מודל open-weights דווקא בגלל יכולות סייבר זה פרט ששווה לשים לב אליו. הוא מדגים בצורה מאוד מוחשית שהשאלה ״האם המודל פתוח?״ כבר לא בהכרח מתארת את כל מנגנון ההפצה.`,
     locale: LOCALE.he,
-    title: 'פתיחות טכנולוגית כ-release pipeline',
+    metadata: {
+      [LOCALE.en]: {
+        description:
+          'Two announcements from August 2026 suggest model openness is no longer binary — it is becoming a layered release pipeline between training and launch.',
+        title: 'Technological openness as a release pipeline',
+      },
+      [LOCALE.he]: {
+        description:
+          'שתי הודעות מאוגוסט 2026 מרמזות שפתיחות של מודל כבר אינה בינארית — היא הופכת לשכבות של release pipeline בין האימון לשחרור.',
+        title: 'פתיחות טכנולוגית כ-release pipeline',
+      },
+    },
   },
-} as const satisfies Record<string, LocalizedContent>
+} as const satisfies Record<string, PostContent>
 
 export const SOCIAL_POSTS = [
   {
+    content: POST_COPY.memory,
     id: 'agent-memory-resolution',
-    original: POST_COPY.memory,
     publishedAt: '2026-09-05',
     sourceUrl: 'https://lnkd.in/p/d4wiTq3E',
   },
   {
+    content: POST_COPY.mcp,
     id: 'mcp-agentic-messaging',
-    original: POST_COPY.mcp,
     publishedAt: '2026-08-23',
     sourceUrl: 'https://lnkd.in/p/d8GvpPt2',
   },
   {
+    content: POST_COPY.classifier,
     id: 'classifier-cost-lesson',
-    original: POST_COPY.classifier,
     publishedAt: '2026-08-22',
     sourceUrl: 'https://lnkd.in/p/dEmNqhTi',
   },
   {
+    content: POST_COPY.modelRelease,
     id: 'model-release-pipeline',
-    original: POST_COPY.modelRelease,
     publishedAt: '2026-08-15',
     sourceUrl: 'https://lnkd.in/p/dkg4jZr6',
   },

@@ -12,6 +12,11 @@ const DOCUMENT = {
   titleSeparator: ' | ',
 } as const
 
+export const applyPageMetadata = (title: string, siteName: string, description: string): void => {
+  document.title = `${title}${DOCUMENT.titleSeparator}${siteName}`
+  document.querySelector<HTMLMetaElement>(DOCUMENT.descriptionSelector)?.setAttribute('content', description)
+}
+
 export const useDocumentContext = () => {
   const route = useRoute()
   const { locale, t } = useI18n({ useScope: I18N_SCOPE.global })
@@ -22,15 +27,13 @@ export const useDocumentContext = () => {
 
   watchEffect(() => {
     const activeLocale = locale.value as Locale
-    const description = document.querySelector<HTMLMetaElement>(DOCUMENT.descriptionSelector)
     const { descriptionKey, titleKey } = route.meta
 
     document.documentElement.lang = activeLocale
     document.documentElement.dir = LOCALE_DIRECTION[activeLocale]
     if (!descriptionKey || !titleKey) return
 
-    document.title = `${t(titleKey)}${DOCUMENT.titleSeparator}${t(DOCUMENT.siteNameKey)}`
-    description?.setAttribute('content', t(descriptionKey))
+    applyPageMetadata(t(titleKey), t(DOCUMENT.siteNameKey), t(descriptionKey))
   })
 
   watch(

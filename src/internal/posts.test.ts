@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest'
 
-import { contentForLocale } from './content'
 import { LOCALE } from './i18n'
 import { SOCIAL_POSTS } from './posts'
 
 const TEST = {
-  content: 'provides Hebrew content for every post',
+  content: 'keeps every post body in its original Hebrew',
   count: 'contains the four selected posts',
+  metadata: 'provides a title and short description in every language',
   order: 'keeps posts in reverse chronological order',
   suite: 'social posts',
   unique: 'uses unique identifiers and source URLs',
@@ -39,11 +39,19 @@ describe(TEST.suite, () => {
 
   test(TEST.content, () => {
     for (const post of SOCIAL_POSTS) {
-      const content = contentForLocale(post, LOCALE.en)
+      expect(post.content.locale).toBe(LOCALE.he)
+      expect(post.content.body.length).toBeGreaterThan(VALUE.minimumTextLength)
+    }
+  })
 
-      expect(content.locale).toBe(LOCALE.he)
-      expect(content.body.length).toBeGreaterThan(VALUE.minimumTextLength)
-      expect(content.title.length).toBeGreaterThan(VALUE.minimumTextLength)
+  test(TEST.metadata, () => {
+    for (const post of SOCIAL_POSTS) {
+      for (const locale of Object.values(LOCALE)) {
+        const metadata = post.content.metadata[locale]
+
+        expect(metadata.title.length).toBeGreaterThan(VALUE.minimumTextLength)
+        expect(metadata.description.length).toBeGreaterThan(VALUE.minimumTextLength)
+      }
     }
   })
 })

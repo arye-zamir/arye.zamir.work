@@ -140,6 +140,7 @@ a {
 .home-view,
 .read-view,
 .see-view,
+.post-view,
 .not-found-view {
   flex: 1;
   padding: clamp(72px, 12vw, 160px) clamp(24px, 8vw, 112px);
@@ -311,6 +312,15 @@ h1[tabindex='-1']:focus {
   line-height: 1.15;
 }
 
+.journal-entry h2 a {
+  text-decoration: none;
+}
+
+.journal-entry h2 a:hover,
+.journal-entry h2 a:focus-visible {
+  color: var(--primary);
+}
+
 .journal-date {
   display: block;
   margin-bottom: 12px;
@@ -320,33 +330,76 @@ h1[tabindex='-1']:focus {
   letter-spacing: 0.08em;
 }
 
-.journal-details {
-  max-width: 720px;
+.journal-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.journal-details summary {
-  width: fit-content;
+.journal-meta .journal-date {
+  margin-bottom: 0;
+}
+
+.language-flag {
+  flex: none;
+  width: 21px;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.journal-description {
+  max-width: 650px;
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+.journal-link {
   color: var(--primary);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.journal-details summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 4px;
 }
 
 .journal-body {
-  padding-block-start: 28px;
+  max-width: 720px;
+  padding-block-start: 12px;
 }
 
 .journal-body p {
   margin-bottom: 1.4em;
 }
 
-.journal-source {
-  display: inline-block;
-  margin-top: 8px;
+.post-view {
+  padding-block: clamp(48px, 8vw, 96px);
+}
+
+.post-header {
+  max-width: 760px;
+  padding-bottom: clamp(24px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+}
+
+.post-view h1 {
+  margin-bottom: 0;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.15;
+}
+
+.post-lede {
+  max-width: 650px;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+}
+
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+.post-actions .text-link {
+  color: var(--primary);
 }
 
 .site-footer {
@@ -398,6 +451,7 @@ h1[tabindex='-1']:focus {
   .home-view,
   .read-view,
   .see-view,
+  .post-view,
   .not-found-view {
     padding-block: 64px;
   }

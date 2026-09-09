@@ -15,15 +15,27 @@ export const ROUTE_PATH = {
   home: '/',
   notFound: '/:pathMatch(.*)*',
   read: '/read',
+  readPost: '/read/:slug',
   see: '/see',
 } as const
+
+export const readPostPath = (slug: string): string => `${ROUTE_PATH.read}/${slug}`
 
 const ROUTE_NAME = {
   home: 'home',
   notFound: 'not-found',
   read: 'read',
+  readPost: 'read-post',
   see: 'see',
 } as const
+
+const PATH_PREFIX_LENGTH = 1
+
+export const notFoundRoute = (path: string) =>
+  ({
+    name: ROUTE_NAME.notFound,
+    params: { pathMatch: path.slice(PATH_PREFIX_LENGTH).split('/') },
+  }) as const
 
 const ROUTE_META = {
   home: {
@@ -89,6 +101,11 @@ export const router = createRouter({
       meta: ROUTE_META.read,
       name: ROUTE_NAME.read,
       path: ROUTE_PATH.read,
+    },
+    {
+      component: () => import('../app/views/PostView.vue'),
+      name: ROUTE_NAME.readPost,
+      path: ROUTE_PATH.readPost,
     },
     {
       component: () => import('../app/views/SeeView.vue'),

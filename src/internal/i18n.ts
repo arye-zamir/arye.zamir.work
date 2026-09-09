@@ -98,8 +98,10 @@ const ENGLISH_MESSAGES = {
   },
   preferences: { dark: 'Dark', light: 'Light', system: 'System', theme: 'Color theme' },
   read: {
+    backLabel: 'All posts',
     eyebrow: 'Notes on making software',
     fullPost: 'Full post',
+    hebrewContent: 'Post written in Hebrew',
     introduction:
       'Field notes about engineering decisions, product craft, and the work of turning an idea into something dependable.',
     originalLink: 'View the original on LinkedIn',
@@ -195,8 +197,10 @@ const HEBREW_MESSAGES = {
   },
   preferences: { dark: 'כהה', light: 'בהיר', system: 'מערכת', theme: 'ערכת צבעים' },
   read: {
+    backLabel: 'לכל הפוסטים',
     eyebrow: 'רשימות על יצירת תוכנה',
     fullPost: 'הפוסט המלא',
+    hebrewContent: 'הפוסט כתוב בעברית',
     introduction: 'רשימות מהשטח על החלטות הנדסיות, מלאכת המוצר והדרך להפוך רעיון למשהו שאפשר לסמוך עליו.',
     originalLink: 'לפוסט המקורי בלינקדאין',
     postsLabel: 'פוסטים',
